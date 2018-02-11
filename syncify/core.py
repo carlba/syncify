@@ -26,6 +26,12 @@ applications = {
         'url': 'https://www.jetbrains.com/help/webstorm/directories-used-by-webstorm-to-store-settings-caches-plugins-and-logs.html',
         'paths': {'config': {'darwin': '$HOME/Library/Preferences/WebStorm2017.3'},
                   'plugins': {'darwin': '$HOME/Library/Application Support/WebStorm2017.3'}}
+    },
+    'development': {
+        'description': 'My development stuff',
+        'url': 'https://github.com/carlba',
+        'paths': {'personal': {'darwin': '$HOME/development'},
+                  'work': {'darwin': '$HOME/bsdev'}}
     }
 }
 
