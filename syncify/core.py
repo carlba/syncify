@@ -68,6 +68,11 @@ def reset_tar_info(members):
         tarinfo.gname = grp.getgrgid(os.getgid()).gr_name
         yield tarinfo
 
+def ignore_files(members):
+    for tarinfo in members:
+        if tarinfo.name not in ['venv']:
+            yield tarinfo
+
 
 @click.group()
 @click.option('--output_path', '-o', type=click.Path(exists=True),
@@ -97,10 +102,10 @@ def store(ctx, application_names):
                     with remember_cwd():
                         os.chdir(expanded_platform_path)
                         print(os.getcwd())
-                        output_tarfile_path = create_tar_path(ctx.obj['output_path'], application_name,
-                                                              path_name)
+                        output_tarfile_path = create_tar_path(ctx.obj['output_path'],
+                                                              application_name, path_name)
                         with tarfile.open(output_tarfile_path, "w") as tar:
-                            tar.add('.')
+                            tar.add('.', members=ignore_files)
 
 
 @cli.command()
