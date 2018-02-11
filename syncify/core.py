@@ -96,10 +96,11 @@ def store(ctx, application_names):
                 else:
                     with remember_cwd():
                         os.chdir(expanded_platform_path)
+                        print(os.getcwd())
                         output_tarfile_path = create_tar_path(ctx.obj['output_path'], application_name,
                                                               path_name)
                         with tarfile.open(output_tarfile_path, "w") as tar:
-                            tar.add("*")
+                            tar.add('.')
 
 
 @cli.command()
