@@ -9,6 +9,8 @@ import pathlib2 as pathlib
 # noinspection PyUnresolvedReferences
 from sh import pkill
 import grp
+import errno
+import shutil
 
 applications = {
     'transgui': {
@@ -18,14 +20,18 @@ applications = {
     },
     'pycharm': {
         'description': 'PyCharm 2017.3',
-        'paths': {'config': {'darwin': '$HOME/Library/Preferences/PyCharm2017.3'},
-                  'plugins': {'darwin': '$HOME//Library/Application Support//PyCharm2017.3'}}
+        'paths': {'config': {'darwin': '$HOME/Library/Preferences/PyCharm2017.3',
+                             'linux2': '$HOME/.PyCharm2017.3/config'},
+                  'plugins': {'darwin': '$HOME/Library/Application Support/PyCharm2017.3',
+                              'linux2': None}}
     },
     'webstorm': {
         'description': 'WebStorm 2017.3',
         'url': 'https://www.jetbrains.com/help/webstorm/directories-used-by-webstorm-to-store-settings-caches-plugins-and-logs.html',
-        'paths': {'config': {'darwin': '$HOME/Library/Preferences/WebStorm2017.3'},
-                  'plugins': {'darwin': '$HOME/Library/Application Support/WebStorm2017.3'}}
+        'paths': {'config': {'darwin': '$HOME/Library/Preferences/WebStorm2017.3',
+                             'linux': '$HOME/.WebStorm2017.3/config'},
+                  'plugins': {'darwin': '$HOME/Library/Application Support/WebStorm2017.3',
+                              'linux2': None}}
     },
     'development': {
         'description': 'My development stuff',
@@ -80,19 +86,20 @@ def store(ctx, application_names):
             raise click.UsageError('Application {} is not defined'.format(application_name))
         else:
             # pkill(application_name)
-            click.echo('Storing' + application_name)
             for path_name, path in applications[application_name]['paths'].viewitems():
+                if not path[sys.platform]:
+                    return
                 expanded_platform_path = expand_vars_user(path[sys.platform])
                 if not os.path.isdir(expanded_platform_path):
                     raise click.UsageError("The {} path doesn't exists".format(
                         expanded_platform_path))
                 else:
                     with remember_cwd():
-                        os.chdir(os.path.dirname(expanded_platform_path))
-                        output_tarfile_path = create_tar_path(ctx.obj['output_path'],application_name,
+                        os.chdir(expanded_platform_path)
+                        output_tarfile_path = create_tar_path(ctx.obj['output_path'], application_name,
                                                               path_name)
                         with tarfile.open(output_tarfile_path, "w") as tar:
-                            tar.add(os.path.basename(expanded_platform_path))
+                            tar.add("*")
 
 
 @cli.command()
@@ -104,13 +111,17 @@ def load(ctx, application_names):
             raise click.UsageError('Application {} is not defined'.format('name'))
         else:
             for path_name, path in applications[application_name]['paths'].viewitems():
+                if not path[sys.platform]:
+                    return
                 click.echo('Loading' + application_name)
                 expanded_platform_path = expand_vars_user(path[sys.platform])
-                pathlib.Path(expanded_platform_path).mkdir(parents=True, exist_ok=True)
+                if os.path.exists(expanded_platform_path):
+                    shutil.rmtree(expanded_platform_path)
+                else:
+                    pathlib.Path(expanded_platform_path).mkdir(parents=True, exist_ok=True)
                 with tarfile.open(create_tar_path(ctx.obj['output_path'],
                                                   application_name, path_name), 'r') as tar:
-                    tar.extractall(path=os.path.dirname(expanded_platform_path),
-                                   members=reset_tar_info(tar))
+                    tar.extractall(path=expanded_platform_path, members=reset_tar_info(tar))
 
 
 def test_cli_store():
