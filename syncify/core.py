@@ -68,7 +68,7 @@ def store(ctx, application_names):
         if not applications.get(application_name):
             raise click.UsageError('Application {} is not defined'.format(application_name))
         else:
-            # pkill(name)
+            # pkill(application_name)
             click.echo('Storing' + application_name)
             for path_name, path in applications[application_name]['paths'].viewitems():
                 expanded_platform_path = expand_vars_user(path[sys.platform])
