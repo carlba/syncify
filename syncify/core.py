@@ -23,8 +23,6 @@ applications = {
 }
 
 script_dir_path = os.path.dirname(os.path.realpath(__file__))
-output_path = None
-
 
 @contextlib.contextmanager
 def remember_cwd():
