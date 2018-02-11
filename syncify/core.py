@@ -65,7 +65,7 @@ def reset_tar_info(members):
 
 @click.group()
 @click.option('--output_path', '-o', type=click.Path(exists=True),
-              default=script_dir_path)
+              default=expand_vars_user('~/.config/syncify'))
 @click.pass_context
 def cli(ctx, output_path):
     ctx.obj['output_path'] = output_path
