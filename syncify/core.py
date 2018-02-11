@@ -13,12 +13,19 @@ import grp
 applications = {
     'transgui': {
         'description': 'Transmission Remote GUI',
+        'url': 'https://www.jetbrains.com/help/pycharm/directories-used-by-pycharm-to-store-settings-caches-plugins-and-logs.html',
         'paths': {'config': {'darwin': '$HOME/.config/Transmission Remote GUI'}}
     },
     'pycharm': {
         'description': 'PyCharm 2017.3',
         'paths': {'config': {'darwin': '$HOME/Library/Preferences/PyCharm2017.3'},
-                  'plugins': {'darwin': '$HOME/Application Support/PyCharm2017.3'}}
+                  'plugins': {'darwin': '$HOME//Library/Application Support//PyCharm2017.3'}}
+    },
+    'webstorm': {
+        'description': 'WebStorm 2017.3',
+        'url': 'https://www.jetbrains.com/help/webstorm/directories-used-by-webstorm-to-store-settings-caches-plugins-and-logs.html',
+        'paths': {'config': {'darwin': '$HOME/Library/Preferences/WebStorm2017.3'},
+                  'plugins': {'darwin': '$HOME/Library/Application Support/WebStorm2017.3'}}
     }
 }
 
