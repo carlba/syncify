@@ -65,7 +65,7 @@ def reset_tar_info(members):
 
 @click.group()
 @click.option('--output_path', '-o', type=click.Path(exists=True),
-              default=expand_vars_user('~/.config/syncify'))
+              default=expand_vars_user('/Volumes/storage/00backup/syncify'))
 @click.pass_context
 def cli(ctx, output_path):
     ctx.obj['output_path'] = output_path
@@ -108,7 +108,7 @@ def load(ctx, application_names):
                 expanded_platform_path = expand_vars_user(path[sys.platform])
                 pathlib.Path(expanded_platform_path).mkdir(parents=True, exist_ok=True)
                 with tarfile.open(create_tar_path(ctx.obj['output_path'],
-                                                  application_name, path_name)) as tar:
+                                                  application_name, path_name), 'r') as tar:
                     tar.extractall(path=os.path.dirname(expanded_platform_path),
                                    members=reset_tar_info(tar))
 
