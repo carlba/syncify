@@ -1,0 +1,5 @@
+click==6.7
+pathlib2==2.3.0
+scandir==1.6
+sh==1.12.14
+six==1.11.0
