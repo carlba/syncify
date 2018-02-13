@@ -59,7 +59,8 @@ script_dir_path = os.path.dirname(os.path.realpath(__file__))
 
 excludes = {'/media/Windows/Users/genzo/Dropbox/transfer', '.cache', 'VirtualBox VMs',
             'Downloads', '.vagrant.d', '.dropbox', 'venv', 'Videos', '*.pyc', "compile-cache",
-            '*.tmp', '*.*~', 'nohup.out', 'system/caches', 'node_modules'}
+            '*.tmp', '*.*~', 'nohup.out', 'system/caches', 'node_modules', 'Cache', 'cache'}
+
 
 @contextlib.contextmanager
 def remember_cwd():
