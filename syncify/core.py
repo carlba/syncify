@@ -87,6 +87,7 @@ def reset_tar_info(members):
         tarinfo.gname = grp.getgrgid(os.getgid()).gr_name
         yield tarinfo
 
+
 def ignore_file(tarinfo):
     if fnmatch.fnmatch(tarinfo.name, '*/venv'):
         print('Matching' + tarinfo.name)
@@ -150,8 +151,6 @@ def store(ctx, application_names, compress):
         with remember_cwd():
             os.chdir(os.path.dirname(ctx.obj['output_path']))
             tar('--use-compress-program', '/usr/local/bin/pigz', '-czf', 'syncify.tar.gz', 'syncify', _bg=True)
-            tar('--use-compress-program', '/usr/local/bin/pigz', '-czf', 'syncify.tar.gz', 'syncify', _bg=True)
-
 
 
 @cli.command()
