@@ -101,7 +101,7 @@ pyobjc-framework-SystemConfiguration==4.1
 pyobjc-framework-Vision==4.1
 pyobjc-framework-WebKit==4.1
 PyYAML==3.12
-requests==2.18.4
+requests==2.20.0
 rsa==3.4.2
 ruamel.ordereddict==0.4.13
 ruamel.yaml==0.15.35
