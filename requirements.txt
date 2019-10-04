@@ -100,7 +100,7 @@ pyobjc-framework-SyncServices==4.1
 pyobjc-framework-SystemConfiguration==4.1
 pyobjc-framework-Vision==4.1
 pyobjc-framework-WebKit==4.1
-PyYAML==3.12
+PyYAML==5.1
 requests==2.18.4
 rsa==3.4.2
 ruamel.ordereddict==0.4.13
