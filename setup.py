@@ -10,5 +10,5 @@ setup(entry_points={'console_scripts': ['syncify = syncify.core:main']},
       description='Syncs application data between systems',
       author='Carl Backstrom',
       packages=find_packages(),
-      install_requires=['click', 'pathlib2', 'sh', 'scandir']
+      install_requires=['click', 'pathlib2', 'sh', 'scandir', 'psutil']
 )

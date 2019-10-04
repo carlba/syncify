@@ -21,18 +21,18 @@ applications = {
         'paths': {'config': {'darwin': '$HOME/.config/Transmission Remote GUI'}}
     },
     'pycharm': {
-        'description': 'PyCharm 2018.3',
-        'paths': {'config': {'darwin': '$HOME/Library/Preferences/PyCharm2018.2',
-                             'linux2': '$HOME/.PyCharm2018.2/config'},
-                  'plugins': {'darwin': '$HOME/Library/Application Support/PyCharm2018.2',
+        'description': 'PyCharm 2019.2',
+        'paths': {'config': {'darwin': '$HOME/Library/Preferences/PyCharm2019.2',
+                             'linux2': '$HOME/.PyCharm2019.2/config'},
+                  'plugins': {'darwin': '$HOME/Library/Application Support/PyCharm2019.2',
                               'linux2': None}}
     },
     'webstorm': {
-        'description': 'WebStorm 2018.2',
+        'description': 'WebStorm 2019.2',
         'url': 'https://www.jetbrains.com/help/webstorm/directories-used-by-webstorm-to-store-settings-caches-plugins-and-logs.html',
-        'paths': {'config': {'darwin': '$HOME/Library/Preferences/WebStorm2018.2',
+        'paths': {'config': {'darwin': '$HOME/Library/Preferences/WebStorm2019.2',
                              'linux': '$HOME/.WebStorm2018.2/config'},
-                  'plugins': {'darwin': '$HOME/Library/Application Support/WebStorm2018.2',
+                  'plugins': {'darwin': '$HOME/Library/Application Support/WebStorm2019.2',
                               'linux2': None}}
     },
     'development': {
@@ -41,16 +41,11 @@ applications = {
         'paths': {'personal': {'all': '$HOME/development'},
                   'work': {'all': '$HOME/bsdev'}}
     },
-    # 'alfred3': {
-    #     'description': 'Alfred 3',
-    #     'url': 'https://www.alfredapp.com/help/troubleshooting/preferences',
-    #     'paths': {'config': {'darwin': '$HOME/Library/Application Support/Alfred 3'}}
-    # },
-    # 'iterm2': {
-    #     'description': 'iTerm2',
-    #     'url': 'https://https://www.iterm2.com/',
-    #     'paths': {'config': {'darwin': '$HOME/Library/Preferences/com.googlecode.iterm2.plist'}}
-    # },
+    'iterm2': {
+        'description': 'iTerm2',
+        'url': 'https://https://www.iterm2.com/',
+        'paths': {'config': {'darwin': '$HOME/Library/Preferences/com.googlecode.iterm2.plist'}}
+    },
     'calibre': {
         'description': 'Calibre',
         'url': 'https://manual.calibre-ebook.com/faq.html',
@@ -60,8 +55,26 @@ applications = {
     'settings': {
         'description': 'MacOS Settings',
         'url': 'none',
-        'paths': {'config': {'darwin': '$HOME/settings'},
-                  'library': {'darwin': '$HOME/Calibre Library'}}
+        'paths': {'config': {'darwin': '$HOME/settings'}}
+    },
+    'hammerspoon': {
+        'description': 'Hammerspoon settings',
+        'url': 'none',
+        'paths': {'config': {'darwin': '$HOME/.hammerspoon'}}
+    },
+    'vscode': {
+        'description': 'VSCODE settings',
+        'url': 'https://code.visualstudio.com/docs/getstarted/settings',
+        'paths': {
+            'settings_file': {
+                'darwin': '$HOME/Library/Application Support/Code/User/settings.json',
+                'linux2': '$HOME/.config/Code/User/settings.json'
+            },
+            'workspace': {
+                'darwin': '$HOME/.vscode',
+                'linux2': '$HOME/.vscode'
+            }
+        }
     }
 }
 
@@ -72,7 +85,7 @@ excludes = {'/media/Windows/Users/genzo/Dropbox/transfer', '.cache', 'VirtualBox
             '*.tmp', '*.*~', 'nohup.out', 'system/caches', 'node_modules', 'Cache', 'cache',
             'facebook_data'}
 
-tarfile_output_path = '/Volumes/chomsky/transfer/syncify.tar.gz'
+tarfile_output_path = '$HOME/Downloads/syncify.tar.gz'
 
 
 @contextlib.contextmanager
@@ -170,7 +183,7 @@ def store(ctx, application_names, clear_cache):
             raise click.ClickException('Compression already active try again later')
         os.chdir(os.path.dirname(ctx.obj['output_path']))
         tar('--use-compress-program', '/usr/local/bin/pigz', '-czf',
-            tarfile_output_path, 'syncify', _bg=True)
+            expand_vars_user(tarfile_output_path), 'syncify', _bg=True)
 
 
 @cli.command()
@@ -191,7 +204,7 @@ def load(ctx, application_names):
             click.echo('Created {}'.format(ctx.obj['output_path']))
 
         os.chdir(os.path.dirname(ctx.obj['output_path']))
-        print tar('-xzf', tarfile_output_path)
+        print tar('-xzf', expand_vars_user(tarfile_output_path))
 
     if not application_names:
         application_names = applications.keys()
