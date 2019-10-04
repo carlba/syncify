@@ -41,21 +41,26 @@ applications = {
         'paths': {'personal': {'all': '$HOME/development'},
                   'work': {'all': '$HOME/bsdev'}}
     },
-    'alfred3': {
-        'description': 'WebStorm 2017.3',
-        'url': 'https://www.alfredapp.com/help/troubleshooting/preferences',
-        'paths': {'config': {'darwin': '$HOME/Library/Application Support/Alfred 3'}}
-    },
-    'iterm2': {
-        'description': 'iTerm2',
-        'url': 'https://www.alfredapp.com/help/troubleshooting/preferences',
-        'paths': {'config': {'darwin': '$HOME/Library/Preferences/com.googlecode.iterm2.plist'}}
-    },
-
+    # 'alfred3': {
+    #     'description': 'Alfred 3',
+    #     'url': 'https://www.alfredapp.com/help/troubleshooting/preferences',
+    #     'paths': {'config': {'darwin': '$HOME/Library/Application Support/Alfred 3'}}
+    # },
+    # 'iterm2': {
+    #     'description': 'iTerm2',
+    #     'url': 'https://https://www.iterm2.com/',
+    #     'paths': {'config': {'darwin': '$HOME/Library/Preferences/com.googlecode.iterm2.plist'}}
+    # },
     'calibre': {
         'description': 'Calibre',
         'url': 'https://manual.calibre-ebook.com/faq.html',
         'paths': {'config': {'darwin': '$HOME/Library/Preferences/calibre'},
+                  'library': {'darwin': '$HOME/Calibre Library'}}
+    },
+    'settings': {
+        'description': 'MacOS Settings',
+        'url': 'none',
+        'paths': {'config': {'darwin': '$HOME/settings'},
                   'library': {'darwin': '$HOME/Calibre Library'}}
     }
 }
@@ -64,7 +69,8 @@ script_dir_path = os.path.dirname(os.path.realpath(__file__))
 
 excludes = {'/media/Windows/Users/genzo/Dropbox/transfer', '.cache', 'VirtualBox VMs',
             'Downloads', '.vagrant.d', '.dropbox', 'venv', 'Videos', '*.pyc', "compile-cache",
-            '*.tmp', '*.*~', 'nohup.out', 'system/caches', 'node_modules', 'Cache', 'cache'}
+            '*.tmp', '*.*~', 'nohup.out', 'system/caches', 'node_modules', 'Cache', 'cache',
+            'facebook_data'}
 
 tarfile_output_path = '/Volumes/chomsky/transfer/syncify.tar.gz'
 
@@ -113,7 +119,7 @@ def rsync_to(src, dst):
         pathlib.Path(dst).mkdir(parents=True, exist_ok=True)
 
     exclude_params = zip(len(excludes) * ['--exclude'], excludes)
-    rsync('-rlt', '--out-format=%i%n%L', src, dst + '/', delete=True, *exclude_params,
+    rsync('-rlt', '--out-format=%i: %n%L', src, dst + '/', delete=True, *exclude_params,
           _out=process_output)
 
 
@@ -141,7 +147,7 @@ def cli(ctx, output_path):
 def store(ctx, application_names, clear_cache):
 
     if clear_cache:
-        shutil.rmtree(ctx.obj['output_path'])
+        shutil.rmtree(ctx.obj['output_path'], ignore_errors=False)
         pathlib.Path(ctx.obj['output_path']).mkdir(parents=True, exist_ok=True)
         click.echo('Cache is cleared!')
 
@@ -172,6 +178,21 @@ def store(ctx, application_names, clear_cache):
 @click.pass_context
 def load(ctx, application_names):
 
+    # if "tar" in (p.name() for p in psutil.process_iter()):
+    #     raise click.ClickException('Compression already active try again later')
+
+    with remember_cwd():
+        if os.path.isdir(ctx.obj['output_path']):
+            shutil.rmtree(ctx.obj['output_path'])
+            pathlib.Path(ctx.obj['output_path']).mkdir(parents=True, exist_ok=True)
+            click.echo('Recreated {}'.format(ctx.obj['output_path']))
+        else:
+            pathlib.Path(ctx.obj['output_path']).mkdir(parents=True, exist_ok=True)
+            click.echo('Created {}'.format(ctx.obj['output_path']))
+
+        os.chdir(os.path.dirname(ctx.obj['output_path']))
+        print tar('-xzf', tarfile_output_path)
+
     if not application_names:
         application_names = applications.keys()
 
@@ -184,11 +205,6 @@ def load(ctx, application_names):
                 expanded_platform_path = expand_vars_user(find_platform_path(path))
                 dst_path = create_tar_path(ctx.obj['output_path'], application_name, path_name)
                 rsync_to(src=dst_path, dst=expanded_platform_path)
-
-    with remember_cwd():
-        os.chdir(os.path.dirname(ctx.obj['output_path']))
-        tar('--use-compress-program', '/usr/local/bin/pigz', '-czf',
-            "tarfile_output_path", 'syncify', _bg=True)
 
 
 def test_cli_store():
