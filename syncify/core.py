@@ -85,7 +85,8 @@ excludes = {'/media/Windows/Users/genzo/Dropbox/transfer', '.cache', 'VirtualBox
             '*.tmp', '*.*~', 'nohup.out', 'system/caches', 'node_modules', 'Cache', 'cache',
             'facebook_data'}
 
-tarfile_output_path = '$HOME/Downloads/syncify.tar.gz'
+tarfile_output_path = '$HOME/Google Drive/transfer/syncify.tar.gz'
+
 
 
 @contextlib.contextmanager
