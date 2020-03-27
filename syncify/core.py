@@ -4,7 +4,7 @@ import sys
 import shutil
 import os
 import contextlib
-import pathlib2 as pathlib
+import pathlib
 
 import click
 import psutil
@@ -86,7 +86,6 @@ excludes = {'/media/Windows/Users/genzo/Dropbox/transfer', '.cache', 'VirtualBox
             'facebook_data'}
 
 tarfile_output_path = '$HOME/Google Drive/transfer/syncify.tar.gz'
-
 
 
 @contextlib.contextmanager
@@ -173,7 +172,7 @@ def store(ctx, application_names, clear_cache):
             raise click.UsageError('Application {} is not defined'.format(application_name))
         else:
             # pkill(application_name)
-            for path_name, path in applications[application_name]['paths'].viewitems():
+            for path_name, path in applications[application_name]['paths'].items():
                 expanded_platform_path = expand_vars_user(find_platform_path(path))
                 dst_path = create_tar_path(ctx.obj['output_path'], application_name, path_name)
                 click.echo('Synchronizing {}:{}'.format(application_name, path_name), color='green')
@@ -205,7 +204,7 @@ def load(ctx, application_names):
             click.echo('Created {}'.format(ctx.obj['output_path']))
 
         os.chdir(os.path.dirname(ctx.obj['output_path']))
-        print tar('-xzf', expand_vars_user(tarfile_output_path))
+        print(tar('-xzf', expand_vars_user(tarfile_output_path)))
 
     if not application_names:
         application_names = applications.keys()
@@ -215,7 +214,7 @@ def load(ctx, application_names):
             raise click.UsageError('Application {} is not defined'.format(application_name))
         else:
             # pkill(application_name)
-            for path_name, path in applications[application_name]['paths'].viewitems():
+            for path_name, path in applications[application_name]['paths'].items():
                 expanded_platform_path = expand_vars_user(find_platform_path(path))
                 dst_path = create_tar_path(ctx.obj['output_path'], application_name, path_name)
                 rsync_to(src=dst_path, dst=expanded_platform_path)
@@ -237,7 +236,7 @@ def main():
         runner = click.testing.CliRunner()
         result = runner.invoke(cli, ['--output_path', '/Users/cada/.config/syncify', 'store'],
                                catch_exceptions=False)
-        print result
+        print(result)
     else:
         cli(obj={})
 
