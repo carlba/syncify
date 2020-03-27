@@ -22,17 +22,17 @@ applications = {
     },
     'pycharm': {
         'description': 'PyCharm 2019.2',
-        'paths': {'config': {'darwin': '$HOME/Library/Preferences/PyCharm2019.2',
-                             'linux2': '$HOME/.PyCharm2019.2/config'},
-                  'plugins': {'darwin': '$HOME/Library/Application Support/PyCharm2019.2',
+        'paths': {'config': {'darwin': '$HOME/Library/Preferences/PyCharm2019.3',
+                             'linux2': '$HOME/.PyCharm2019.3/config'},
+                  'plugins': {'darwin': '$HOME/Library/Application Support/PyCharm2019.3',
                               'linux2': None}}
     },
     'webstorm': {
         'description': 'WebStorm 2019.2',
         'url': 'https://www.jetbrains.com/help/webstorm/directories-used-by-webstorm-to-store-settings-caches-plugins-and-logs.html',
-        'paths': {'config': {'darwin': '$HOME/Library/Preferences/WebStorm2019.2',
-                             'linux': '$HOME/.WebStorm2018.2/config'},
-                  'plugins': {'darwin': '$HOME/Library/Application Support/WebStorm2019.2',
+        'paths': {'config': {'darwin': '$HOME/Library/Preferences/WebStorm2019.3',
+                             'linux': '$HOME/.WebStorm2018.3/config'},
+                  'plugins': {'darwin': '$HOME/Library/Application Support/WebStorm2019.3',
                               'linux2': None}}
     },
     'development': {
