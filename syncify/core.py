@@ -34,7 +34,7 @@ script_dir_path = os.path.dirname(os.path.realpath(__file__))
 excludes = {'/media/Windows/Users/genzo/Dropbox/transfer', '.cache', 'VirtualBox VMs',
             'Downloads', '.vagrant.d', '.dropbox', 'venv', 'Videos', '*.pyc', "compile-cache",
             '*.tmp', '*.*~', 'nohup.out', 'system/caches', 'node_modules', 'Cache', 'cache',
-            'facebook_data'}
+            'facebook_data', '*.mp4', 'social-log/messages'}
 
 tarfile_output_path = settings['tarfile_output_path']
 
