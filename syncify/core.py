@@ -12,6 +12,7 @@ import grp
 import fnmatch
 import requests
 from click.testing import CliRunner
+import logging
 # noinspection PyUnresolvedReferences
 from sh import rsync, ssh, git, ErrorReturnCode_128, tar, pkill, hdiutil, open
 
@@ -37,6 +38,10 @@ excludes = {'/media/Windows/Users/genzo/Dropbox/transfer', '.cache', 'VirtualBox
             'facebook_data', '*.mp4', 'social-log/messages'}
 
 tarfile_output_path = settings['tarfile_output_path']
+
+logger = logging.getLogger(__name__)
+logger.addHandler(logging.StreamHandler())
+logger.setLevel(logging.DEBUG)
 
 
 @contextlib.contextmanager
@@ -80,10 +85,11 @@ def rsync_to(src, dst):
     if os.path.isdir(src):
         src += '/'
     if os.path.isfile(src):
-        pathlib.Path(dst).mkdir(parents=True, exist_ok=True)
+        pathlib.Path(dst).parent.mkdir(parents=True, exist_ok=True)
 
     exclude_params = zip(len(excludes) * ['--exclude'], excludes)
-    rsync('-rlt', '--out-format=%i: %n%L', '--max-size=200m', src, dst + '/', delete=True, *exclude_params,
+    rsync('-rlt', '--out-format=%i: %n%L', '--max-size=200m',
+          src, dst + '/' if os.path.isdir(dst) else dst, delete=True, *exclude_params,
           _out=process_output)
 
 
@@ -158,14 +164,22 @@ def load(ctx, application_names):
         application_names = applications.keys()
 
     for application_name in application_names:
+        logger.info(f'Restoring application {application_name}')
         if not applications.get(application_name):
             raise click.UsageError('Application {} is not defined'.format(application_name))
         else:
             # pkill(application_name)
             for path_name, path in applications[application_name]['paths'].items():
-                expanded_platform_path = expand_vars_user(find_platform_path(path))
-                dst_path = create_tar_path(ctx.obj['output_path'], application_name, path_name)
-                rsync_to(src=dst_path, dst=expanded_platform_path)
+                expanded_platform_path = pathlib.Path(expand_vars_user(find_platform_path(path)))
+                dst_path = pathlib.Path(create_tar_path(ctx.obj['output_path'], application_name, path_name))
+
+                if expanded_platform_path.is_file():
+                    dst_path = pathlib.Path(dst_path) / pathlib.Path(expanded_platform_path).name
+
+                logger.info(f'Syncing from {dst_path.resolve()} '
+                            f'to {expanded_platform_path.resolve()}')
+
+                rsync_to(src=dst_path.resolve(), dst=expanded_platform_path.resolve())
 
 
 def test_cli_store():
