@@ -83,7 +83,7 @@ def rsync_to(src, dst):
         pathlib.Path(dst).mkdir(parents=True, exist_ok=True)
 
     exclude_params = zip(len(excludes) * ['--exclude'], excludes)
-    rsync('-rlt', '--out-format=%i: %n%L', src, dst + '/', delete=True, *exclude_params,
+    rsync('-rlt', '--out-format=%i: %n%L', '--max-size=200m', src, dst + '/', delete=True, *exclude_params,
           _out=process_output)
 
 
