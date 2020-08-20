@@ -78,20 +78,20 @@ def process_output(line):
     click.echo(line, nl=False)
 
 
-def rsync_to(src, dst):
-    if os.path.isdir(src):
+def rsync_to(src: pathlib.Path, dst: pathlib.Path, type: str):
+    if type == 'folder':
         src += '/'
-    if os.path.isfile(src):
-        pathlib.Path(dst).parent.mkdir(parents=True, exist_ok=True)
+
+    if type == 'file':
+        dst.parent.mkdir(parents=True, exist_ok=True)
 
     exclude_params = zip(len(excludes) * ['--exclude'], excludes)
     rsync('-rlt', '--out-format=%i: %n%L', '--max-size=200m',
-          src, dst + '/' if os.path.isdir(dst) else dst, delete=True, *exclude_params,
+          src, str(dst.resolve()) + '/' if type == 'file' else str(dst.resolve()), delete=True, *exclude_params,
           _out=process_output)
 
 
 def find_platform_path(path):
-    click.echo(path)
     if 'all' in path['platforms']:
         return path['platforms']['all']
     elif sys.platform not in path['platforms'] or not path['platforms'][sys.platform]:
@@ -178,13 +178,13 @@ def load(ctx, application_names):
                 dst_path = pathlib.Path(create_tar_path(ctx.obj['output_path'],
                                                         application_name, path['name']))
 
-                if expanded_platform_path.suffix:
-                    dst_path = pathlib.Path(dst_path) / pathlib.Path(expanded_platform_path).name
+                if path['type'] == 'file':
+                    dst_path = dst_path / expanded_platform_path.name
 
                 click.echo(f'Syncing from {dst_path.resolve()} '
                            f'to {expanded_platform_path.resolve()}')
                 if not ctx.obj['dry_run']:
-                    rsync_to(src=str(dst_path.resolve()), dst=str(expanded_platform_path.resolve()))
+                    rsync_to(src=dst_path, dst=expanded_platform_path)
 
 
 def test_cli_store():
