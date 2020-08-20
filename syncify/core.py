@@ -10,73 +10,24 @@ import click
 import psutil
 import grp
 import fnmatch
+import requests
 from click.testing import CliRunner
 # noinspection PyUnresolvedReferences
 from sh import rsync, ssh, git, ErrorReturnCode_128, tar, pkill, hdiutil, open
 
 
-applications = {
-    'transgui': {
-        'description': 'Transmission Remote GUI',
-        'paths': {'config': {'darwin': '$HOME/.config/Transmission Remote GUI'}}
-    },
-    'pycharm': {
-        'description': 'PyCharm 2019.2',
-        'paths': {'config': {'darwin': '$HOME/Library/Preferences/PyCharm2019.3',
-                             'linux2': '$HOME/.PyCharm2019.3/config'},
-                  'plugins': {'darwin': '$HOME/Library/Application Support/PyCharm2019.3',
-                              'linux2': None}}
-    },
-    'webstorm': {
-        'description': 'WebStorm 2019.2',
-        'url': 'https://www.jetbrains.com/help/webstorm/directories-used-by-webstorm-to-store-settings-caches-plugins-and-logs.html',
-        'paths': {'config': {'darwin': '$HOME/Library/Preferences/WebStorm2019.3',
-                             'linux': '$HOME/.WebStorm2018.3/config'},
-                  'plugins': {'darwin': '$HOME/Library/Application Support/WebStorm2019.3',
-                              'linux2': None}}
-    },
-    'development': {
-        'description': 'My development stuff',
-        'url': 'https://github.com/carlba',
-        'paths': {'personal': {'all': '$HOME/development'},
-                  'work': {'all': '$HOME/bsdev'}}
-    },
-    'iterm2': {
-        'description': 'iTerm2',
-        'url': 'https://https://www.iterm2.com/',
-        'paths': {'config': {'darwin': '$HOME/Library/Preferences/com.googlecode.iterm2.plist'}}
-    },
-    'calibre': {
-        'description': 'Calibre',
-        'url': 'https://manual.calibre-ebook.com/faq.html',
-        'paths': {'config': {'darwin': '$HOME/Library/Preferences/calibre'},
-                  'library': {'darwin': '$HOME/Calibre Library'}}
-    },
-    'settings': {
-        'description': 'MacOS Settings',
-        'url': 'none',
-        'paths': {'config': {'darwin': '$HOME/settings'}}
-    },
-    'hammerspoon': {
-        'description': 'Hammerspoon settings',
-        'url': 'none',
-        'paths': {'config': {'darwin': '$HOME/.hammerspoon'}}
-    },
-    'vscode': {
-        'description': 'VSCODE settings',
-        'url': 'https://code.visualstudio.com/docs/getstarted/settings',
-        'paths': {
-            'settings_file': {
-                'darwin': '$HOME/Library/Application Support/Code/User/settings.json',
-                'linux2': '$HOME/.config/Code/User/settings.json'
-            },
-            'workspace': {
-                'darwin': '$HOME/.vscode',
-                'linux2': '$HOME/.vscode'
-            }
-        }
-    }
+headers = {
+    "Cache-Control": "no-cache",
+    "Pragma": "no-cache"
 }
+
+r = requests.get('https://raw.githubusercontent.com/carlba/syncify/master/applications.json',
+                 headers=headers)
+applications = r.json()
+
+r = requests.get('https://raw.githubusercontent.com/carlba/syncify/master/settings.json',
+                 headers=headers)
+settings = r.json()
 
 script_dir_path = os.path.dirname(os.path.realpath(__file__))
 
@@ -85,7 +36,7 @@ excludes = {'/media/Windows/Users/genzo/Dropbox/transfer', '.cache', 'VirtualBox
             '*.tmp', '*.*~', 'nohup.out', 'system/caches', 'node_modules', 'Cache', 'cache',
             'facebook_data'}
 
-tarfile_output_path = '$HOME/Google Drive/transfer/syncify.tar.gz'
+tarfile_output_path = settings['tarfile_output_path']
 
 
 @contextlib.contextmanager
