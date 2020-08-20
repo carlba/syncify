@@ -44,6 +44,7 @@
     "paths": [
       {
         "name": "personal",
+        "type": "folder",
         "platforms": {
           "all": "$HOME/development"
         }

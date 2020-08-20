@@ -78,16 +78,17 @@ def process_output(line):
     click.echo(line, nl=False)
 
 
-def rsync_to(src: pathlib.Path, dst: pathlib.Path, type: str):
-    if type == 'folder':
-        src += '/'
+def format_for_rsync(path: pathlib.Path, filetype: str):
+    return str(path.resolve()) + '/' if filetype == 'folder' else str(path.resolve())
 
-    if type == 'file':
+
+def rsync_to(src: pathlib.Path, dst: pathlib.Path, filetype: str):
+    if filetype == 'file':
         dst.parent.mkdir(parents=True, exist_ok=True)
 
     exclude_params = zip(len(excludes) * ['--exclude'], excludes)
     rsync('-rlt', '--out-format=%i: %n%L', '--max-size=200m',
-          src, str(dst.resolve()) + '/' if type == 'file' else str(dst.resolve()), delete=True, *exclude_params,
+          format_for_rsync(src, filetype), format_for_rsync(dst, filetype), delete=True, *exclude_params,
           _out=process_output)
 
 
@@ -137,7 +138,7 @@ def store(ctx, application_names, clear_cache):
                             f'from {dst_path.resolve()} to {expanded_platform_path.resolve()}',
                             fg='green')
                 if not ctx.obj['dry_run']:
-                    rsync_to(src=expanded_platform_path, dst=dst_path)
+                    rsync_to(src=expanded_platform_path, dst=dst_path, filetype=path['type'])
 
     with remember_cwd():
         if "pigz" in (p.name() for p in psutil.process_iter()):
@@ -177,14 +178,15 @@ def load(ctx, application_names):
                 expanded_platform_path = pathlib.Path(expand_vars_user(find_platform_path(path)))
                 dst_path = pathlib.Path(create_tar_path(ctx.obj['output_path'],
                                                         application_name, path['name']))
-
                 if path['type'] == 'file':
                     dst_path = dst_path / expanded_platform_path.name
 
-                click.echo(f'Syncing from {dst_path.resolve()} '
-                           f'to {expanded_platform_path.resolve()}')
+                click.secho(f'Syncing path {path["name"]} for application {application_name} '
+                            f'from {dst_path.resolve()} to {expanded_platform_path.resolve()}',
+                            fg='green')
+
                 if not ctx.obj['dry_run']:
-                    rsync_to(src=dst_path, dst=expanded_platform_path)
+                    rsync_to(src=dst_path, dst=expanded_platform_path, filetype=path['type'])
 
 
 def test_cli_store():
