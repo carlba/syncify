@@ -142,9 +142,6 @@ def store(ctx, application_names, clear_cache):
 @click.pass_context
 def load(ctx, application_names):
 
-    # if "tar" in (p.name() for p in psutil.process_iter()):
-    #     raise click.ClickException('Compression already active try again later')
-
     with remember_cwd():
         if os.path.isdir(ctx.obj['output_path']):
             shutil.rmtree(ctx.obj['output_path'])
