@@ -91,12 +91,13 @@ def rsync_to(src, dst):
 
 
 def find_platform_path(path):
-    if 'all' in path:
-        return path['all']
-    elif sys.platform not in path or not path[sys.platform]:
+    click.echo(path)
+    if 'all' in path['platforms']:
+        return path['platforms']['all']
+    elif sys.platform not in path['platforms'] or not path['platforms'][sys.platform]:
         return False
     else:
-        return path[sys.platform]
+        return path['platforms'][sys.platform]
 
 
 @click.group()
@@ -128,11 +129,15 @@ def store(ctx, application_names, clear_cache):
             raise click.UsageError('Application {} is not defined'.format(application_name))
         else:
             # pkill(application_name)
-            for path_name, path in applications[application_name]['paths'].items():
-                expanded_platform_path = expand_vars_user(find_platform_path(path))
-                dst_path = create_tar_path(ctx.obj['output_path'], application_name, path_name)
-                click.echo('Synchronizing {}:{}'.format(application_name, path_name), color='green')
-                rsync_to(src=expanded_platform_path, dst=dst_path)
+            for path in applications[application_name]['paths']:
+                expanded_platform_path = pathlib.Path(expand_vars_user(find_platform_path(path)))
+                dst_path = pathlib.Path(create_tar_path(ctx.obj['output_path'],
+                                                        application_name, path['name']))
+                click.secho(f'Syncing path {path["name"]} for application {application_name} '
+                            f'from {dst_path.resolve()} to {expanded_platform_path.resolve()}',
+                            fg='green')
+                if not ctx.obj['dry_run']:
+                    rsync_to(src=expanded_platform_path, dst=dst_path)
 
     with remember_cwd():
         if "pigz" in (p.name() for p in psutil.process_iter()):
@@ -168,15 +173,16 @@ def load(ctx, application_names):
             raise click.UsageError('Application {} is not defined'.format(application_name))
         else:
             # pkill(application_name)
-            for path_name, path in applications[application_name]['paths'].items():
+            for path in applications[application_name]['paths']:
                 expanded_platform_path = pathlib.Path(expand_vars_user(find_platform_path(path)))
-                dst_path = pathlib.Path(create_tar_path(ctx.obj['output_path'], application_name, path_name))
+                dst_path = pathlib.Path(create_tar_path(ctx.obj['output_path'],
+                                                        application_name, path['name']))
 
                 if expanded_platform_path.suffix:
                     dst_path = pathlib.Path(dst_path) / pathlib.Path(expanded_platform_path).name
 
-                logger.info(f'Syncing from {dst_path.resolve()} '
-                            f'to {expanded_platform_path.resolve()}')
+                click.echo(f'Syncing from {dst_path.resolve()} '
+                           f'to {expanded_platform_path.resolve()}')
                 if not ctx.obj['dry_run']:
                     rsync_to(src=str(dst_path.resolve()), dst=str(expanded_platform_path.resolve()))
 

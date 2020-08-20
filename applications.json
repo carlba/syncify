@@ -1,58 +1,141 @@
 {
-    "transgui": {
-        "description": "Transmission Remote GUI",
-        "paths": {"config": {"darwin": "$HOME/.config/Transmission Remote GUI"}}
-    },
-    "pycharm": {
-        "description": "PyCharm2020.2",
-        "paths": {"config": {"darwin": "$HOME/Library/Application Support/JetBrains/PyCharm2020.2",
-                             "linux2": null}}
-    },
-    "webstorm": {
-        "description": "WebStorm2020.2",
-        "url": "https://www.jetbrains.com/help/webstorm/directories-used-by-webstorm-to-store-settings-caches-plugins-and-logs.html",
-        "paths": {"config": {"darwin": "$HOME/Library/Application Support/JetBrains/WebStorm2020.2",
-                             "linux": null}}
-    },
-    "development": {
-        "description": "My development stuff",
-        "url": "https://github.com/carlba",
-        "paths": {"personal": {"all": "$HOME/development"},
-                  "work": {"all": "$HOME/bsdev"}}
-    },
-    "iterm2": {
-        "description": "iTerm2",
-        "url": "https://https://www.iterm2.com/",
-        "paths": {"config": {"darwin": "$HOME/Library/Preferences/com.googlecode.iterm2.plist"}}
-    },
-    "calibre": {
-        "description": "Calibre",
-        "url": "https://manual.calibre-ebook.com/faq.html",
-        "paths": {"config": {"darwin": "$HOME/Library/Preferences/calibre"},
-                  "library": {"darwin": "$HOME/Calibre Library"}}
-    },
-    "settings": {
-        "description": "MacOS Settings",
-        "url": "none",
-        "paths": {"config": {"darwin": "$HOME/settings"}}
-    },
-    "hammerspoon": {
-        "description": "Hammerspoon settings",
-        "url": "none",
-        "paths": {"config": {"darwin": "$HOME/.hammerspoon"}}
-    },
-    "vscode": {
-        "description": "VSCODE settings",
-        "url": "https://code.visualstudio.com/docs/getstarted/settings",
-        "paths": {
-            "settings_file": {
-                "darwin": "$HOME/Library/Application Support/Code/User/settings.json",
-                "linux2": "$HOME/.config/Code/User/settings.json"
-            },
-            "workspace": {
-                "darwin": "$HOME/.vscode",
-                "linux2": "$HOME/.vscode"
-            }
+  "transgui": {
+    "description": "Transmission Remote GUI",
+    "paths": [
+      {
+        "name": "config",
+        "type": "folder",
+        "platforms": {
+          "darwin": "$HOME/.config/Transmission Remote GUI"
         }
-    }
+      }
+    ]
+  },
+  "pycharm": {
+    "description": "PyCharm2020.2",
+    "paths": [
+      {
+        "name": "config",
+        "type": "folder",
+        "platforms": {
+          "darwin": "$HOME/Library/Application Support/JetBrains/PyCharm2020.2",
+          "linux2": null
+        }
+      }
+    ]
+  },
+  "webstorm": {
+    "description": "WebStorm2020.2",
+    "url": "https://www.jetbrains.com/help/webstorm/directories-used-by-webstorm-to-store-settings-caches-plugins-and-logs.html",
+    "paths": [
+      {
+        "name": "config",
+        "type": "folder",
+        "platforms": {
+          "darwin": "$HOME/Library/Application Support/JetBrains/WebStorm2020.2",
+          "linux": null
+        }
+      }
+    ]
+  },
+  "development": {
+    "description": "My development stuff",
+    "url": "https://github.com/carlba",
+    "paths": [
+      {
+        "name": "personal",
+        "platforms": {
+          "all": "$HOME/development"
+        }
+      },
+      {
+        "name": "work",
+        "type": "folder",
+        "platforms": {
+          "all": "$HOME/bsdev"
+        }
+      }
+    ]
+  },
+  "iterm2": {
+    "description": "iTerm2",
+    "url": "https://https://www.iterm2.com/",
+    "paths": [
+      {
+        "name": "config",
+        "type": "file",
+        "platforms": {
+          "darwin": "$HOME/Library/Preferences/com.googlecode.iterm2.plist"
+        }
+      }
+    ]
+  },
+  "calibre": {
+    "description": "Calibre",
+    "url": "https://manual.calibre-ebook.com/faq.html",
+    "paths": [
+      {
+        "name": "config",
+        "type": "folder",
+        "platforms": {
+          "darwin": "$HOME/Library/Preferences/calibre"
+        }
+      },
+      {
+        "name": "library",
+        "type": "folder",
+        "platforms": {
+          "darwin": "$HOME/Calibre Library"
+        }
+      }
+    ]
+  },
+  "settings": {
+    "description": "MacOS Settings",
+    "url": "none",
+    "paths": [
+      {
+        "name": "config",
+        "type": "folder",
+        "platforms": {
+          "darwin": "$HOME/settings"
+        }
+      }
+    ]
+  },
+  "hammerspoon": {
+    "description": "Hammerspoon settings",
+    "url": "none",
+    "paths": [
+      {
+        "name": "config",
+        "type": "folder",
+        "platforms": {
+          "darwin": "$HOME/.hammerspoon"
+        }
+      }
+    ]
+  },
+  "vscode": {
+    "description": "VSCODE settings",
+    "url": "https://code.visualstudio.com/docs/getstarted/settings",
+    "paths": [
+      {
+        "name": "settings_file",
+        "type": "file",
+        "platforms": {
+          "darwin": "$HOME/Library/Application Support/Code/User/settings.json",
+          "linux2": "$HOME/.config/Code/User/settings.json"
+        }
+      },
+      {
+        "name": "workspace",
+        "type": "folder",
+        "platforms": {
+          "darwin": "$HOME/.vscode",
+          "linux2": "$HOME/.vscode"
+        }
+      }
+    ]
+  }
 }
