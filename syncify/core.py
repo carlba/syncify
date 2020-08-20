@@ -172,13 +172,13 @@ def load(ctx, application_names):
                 expanded_platform_path = pathlib.Path(expand_vars_user(find_platform_path(path)))
                 dst_path = pathlib.Path(create_tar_path(ctx.obj['output_path'], application_name, path_name))
 
-                if expanded_platform_path.is_file():
+                if expanded_platform_path.suffix:
                     dst_path = pathlib.Path(dst_path) / pathlib.Path(expanded_platform_path).name
 
                 logger.info(f'Syncing from {dst_path.resolve()} '
                             f'to {expanded_platform_path.resolve()}')
                 if not ctx.obj['dry_run']:
-                    rsync_to(src=dst_path.resolve(), dst=expanded_platform_path.resolve())
+                    rsync_to(src=str(dst_path.resolve()), dst=str(expanded_platform_path.resolve()))
 
 
 def test_cli_store():
