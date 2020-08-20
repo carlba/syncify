@@ -1,0 +1,62 @@
+{
+    "transgui": {
+        "description": "Transmission Remote GUI",
+        "paths": {"config": {"darwin": "$HOME/.config/Transmission Remote GUI"}}
+    },
+    "pycharm": {
+        "description": "PyCharm 2019.2",
+        "paths": {"config": {"darwin": "$HOME/Library/Preferences/PyCharm2019.3",
+                             "linux2": "$HOME/.PyCharm2019.3/config"},
+                  "plugins": {"darwin": "$HOME/Library/Application Support/PyCharm2019.3",
+                              "linux2": null}}
+    },
+    "webstorm": {
+        "description": "WebStorm 2019.2",
+        "url": "https://www.jetbrains.com/help/webstorm/directories-used-by-webstorm-to-store-settings-caches-plugins-and-logs.html",
+        "paths": {"config": {"darwin": "$HOME/Library/Preferences/WebStorm2019.3",
+                             "linux": "$HOME/.WebStorm2018.3/config"},
+                  "plugins": {"darwin": "$HOME/Library/Application Support/WebStorm2019.3",
+                              "linux2": null}}
+    },
+    "development": {
+        "description": "My development stuff",
+        "url": "https://github.com/carlba",
+        "paths": {"personal": {"all": "$HOME/development"},
+                  "work": {"all": "$HOME/bsdev"}}
+    },
+    "iterm2": {
+        "description": "iTerm2",
+        "url": "https://https://www.iterm2.com/",
+        "paths": {"config": {"darwin": "$HOME/Library/Preferences/com.googlecode.iterm2.plist"}}
+    },
+    "calibre": {
+        "description": "Calibre",
+        "url": "https://manual.calibre-ebook.com/faq.html",
+        "paths": {"config": {"darwin": "$HOME/Library/Preferences/calibre"},
+                  "library": {"darwin": "$HOME/Calibre Library"}}
+    },
+    "settings": {
+        "description": "MacOS Settings",
+        "url": "none",
+        "paths": {"config": {"darwin": "$HOME/settings"}}
+    },
+    "hammerspoon": {
+        "description": "Hammerspoon settings",
+        "url": "none",
+        "paths": {"config": {"darwin": "$HOME/.hammerspoon"}}
+    },
+    "vscode": {
+        "description": "VSCODE settings",
+        "url": "https://code.visualstudio.com/docs/getstarted/settings",
+        "paths": {
+            "settings_file": {
+                "darwin": "$HOME/Library/Application Support/Code/User/settings.json",
+                "linux2": "$HOME/.config/Code/User/settings.json"
+            },
+            "workspace": {
+                "darwin": "$HOME/.vscode",
+                "linux2": "$HOME/.vscode"
+            }
+        }
+    }
+}
