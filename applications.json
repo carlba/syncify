@@ -4,14 +4,14 @@
         "paths": {"config": {"darwin": "$HOME/.config/Transmission Remote GUI"}}
     },
     "pycharm": {
-        "description": "PyCharm 2019.2",
-        "paths": {"config": {"darwin": "$HOME/Library/Preferences/PyCharm2019.3",
+        "description": "PyCharm2020.2",
+        "paths": {"config": {"darwin": "$HOME/Library/Application Support/JetBrains/PyCharm2020.2",
                              "linux2": null}}
     },
     "webstorm": {
-        "description": "WebStorm 2019.2",
+        "description": "WebStorm2020.2",
         "url": "https://www.jetbrains.com/help/webstorm/directories-used-by-webstorm-to-store-settings-caches-plugins-and-logs.html",
-        "paths": {"config": {"darwin": "$HOME/Library/Application Support/JetBrains/PyCharm2020.2",
+        "paths": {"config": {"darwin": "$HOME/Library/Application Support/JetBrains/WebStorm2020.2",
                              "linux": null}}
     },
     "development": {
@@ -27,7 +27,7 @@
     },
     "calibre": {
         "description": "Calibre",
-        "url": "https://manual.calibre-ebook.com/faq.html"
+        "url": "https://manual.calibre-ebook.com/faq.html",
         "paths": {"config": {"darwin": "$HOME/Library/Preferences/calibre"},
                   "library": {"darwin": "$HOME/Calibre Library"}}
     },
