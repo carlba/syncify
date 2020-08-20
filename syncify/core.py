@@ -12,10 +12,10 @@ import grp
 import fnmatch
 import requests
 from click.testing import CliRunner
-import logging
 # noinspection PyUnresolvedReferences
 from sh import rsync, ssh, git, ErrorReturnCode_128, tar, pkill, hdiutil, open
 
+from .logger import create_logger
 
 headers = {
     "Cache-Control": "no-cache",
@@ -39,10 +39,7 @@ excludes = {'/media/Windows/Users/genzo/Dropbox/transfer', '.cache', 'VirtualBox
 
 tarfile_output_path = settings['tarfile_output_path']
 
-logger = logging.getLogger(__name__)
-logger.addHandler(logging.StreamHandler())
-logger.setLevel(logging.DEBUG)
-
+logger = create_logger()
 
 @contextlib.contextmanager
 def remember_cwd():
@@ -105,9 +102,11 @@ def find_platform_path(path):
 @click.group()
 @click.option('--output_path', '-o', type=click.Path(exists=True),
               default=expand_vars_user('$HOME/.config/syncify'))
+@click.option('--dry-run', is_flag=True, default=False)
 @click.pass_context
-def cli(ctx, output_path):
+def cli(ctx, output_path, dry_run):
     ctx.obj['output_path'] = output_path
+    ctx.obj['dry_run'] = dry_run
 
 
 @cli.command()
@@ -178,8 +177,8 @@ def load(ctx, application_names):
 
                 logger.info(f'Syncing from {dst_path.resolve()} '
                             f'to {expanded_platform_path.resolve()}')
-
-                rsync_to(src=dst_path.resolve(), dst=expanded_platform_path.resolve())
+                if not ctx.obj['dry_run']:
+                    rsync_to(src=dst_path.resolve(), dst=expanded_platform_path.resolve())
 
 
 def test_cli_store():
