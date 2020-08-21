@@ -1,5 +1,5 @@
 {
-  "tarfile_output_path": "$HOME/gdrive/transfer/syncify.tar.gz",
+  "tarfile_output_path": "$HOME/transfer/syncify.tar.gz",
   "excludes": [
     "/media/Windows/Users/genzo/Dropbox/transfer",
     ".cache",
