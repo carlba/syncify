@@ -3,7 +3,12 @@ import os
 import pathlib
 
 from click.testing import CliRunner
-from syncify.core import rsync_to, rsync, store, load
+from syncify.core import rsync_to, rsync, store, load, extract_archive
+
+import mock
+
+
+settings = {"tarfile_output_path": "$HOME/transfer/syncify.tar.gz"}
 
 applications = {
   "transgui": {
@@ -190,7 +195,7 @@ def test_file_is_synced_properly_other_way(mocker):
 def test_it_is_not_possible_to_store_non_defined_app(mocker):
 
     patched_rsync = mocker.patch('syncify.core.rsync', return_value=None)
-    mocker.patch('syncify.core.clear_path', return_value=None)
+    mocker.patch('syncify.core.extract_archive', return_value=None)
     mocker.patch('syncify.core.read_applications', return_value=applications)
 
     runner = CliRunner()
@@ -206,7 +211,7 @@ def test_it_is_not_possible_to_load_non_defined_app(mocker):
 
     patched_rsync = mocker.patch('syncify.core.rsync', return_value=None)
     mocker.patch('syncify.core.read_applications', return_value=applications)
-    mocker.patch('syncify.core.clear_path', return_value=None)
+    mocker.patch('syncify.core.extract_archive', return_value=None)
 
     runner = CliRunner()
 
@@ -225,7 +230,7 @@ def test_loading_folder(mocker):
 
     patched_rsync = mocker.patch('syncify.core.rsync', return_value=None)
     mocker.patch('syncify.core.read_applications', return_value=applications)
-    mocker.patch('syncify.core.clear_path', return_value=None)
+    mocker.patch('syncify.core.extract_archive', return_value=None)
 
     runner = CliRunner()
 
@@ -245,7 +250,7 @@ def test_loading_file(mocker):
 
     patched_rsync = mocker.patch('syncify.core.rsync', return_value=None)
     mocker.patch('syncify.core.read_applications', return_value=applications)
-    mocker.patch('syncify.core.clear_path', return_value=None)
+    mocker.patch('syncify.core.extract_archive', return_value=None)
 
     runner = CliRunner()
 
@@ -266,7 +271,8 @@ def test_storing_folder(mocker):
 
     patched_rsync = mocker.patch('syncify.core.rsync', return_value=None)
     mocker.patch('syncify.core.read_applications', return_value=applications)
-    mocker.patch('syncify.core.clear_path', return_value=None)
+    mocker.patch('syncify.core.extract_archive', return_value=None)
+    mocker.patch('syncify.core.compress', return_value=None)
 
     runner = CliRunner()
 
@@ -287,15 +293,26 @@ def test_storing_file(mocker):
 
     patched_rsync = mocker.patch('syncify.core.rsync', return_value=None)
     mocker.patch('syncify.core.read_applications', return_value=applications)
-    mocker.patch('syncify.core.clear_path', return_value=None)
+    mocker.patch('syncify.core.extract_archive', return_value=None)
+    mocker.patch('syncify.core.compress', return_value=None)
 
     runner = CliRunner()
 
-    result = runner.invoke(store, [application_name],
+    runner.invoke(store, [application_name],
                            obj={'output_path': '$HOME/.config/syncify', 'dry_run': False})
 
     args, kwargs = patched_rsync.call_args
 
     assert args[3] == os.path.expandvars(os.path.expanduser(application_path['platforms']['darwin']))
     assert args[4] == os.path.expandvars(os.path.expanduser(f'$HOME/.config/syncify/{application_name}_{application_path["name"]}')) + '/'
+
+
+def test_extracting_rar(mocker):
+
+    patched_tar: mock.Mock = mocker.patch('syncify.core.tar', return_value=None)
+    os_chdir: mock.Mock = mocker.patch('os.chdir', return_value=None)
+
+    extract_archive('/tmp/output', '/tmp/test.tar.gz')
+    os_chdir.assert_any_call('/tmp')
+    patched_tar.assert_called_once_with('-xzf', '/tmp/test.tar.gz')
 

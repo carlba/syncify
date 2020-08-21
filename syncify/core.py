@@ -62,7 +62,7 @@ def create_tar_path(output_path, application_name, path_name):
     return os.path.join(output_path, f'{application_name}_{path_name}')
 
 
-def extract_archive(path: str):
+def extract_archive(path: str, output_path: str):
     with remember_cwd():
         if os.path.isdir(path):
             shutil.rmtree(path)
@@ -72,7 +72,7 @@ def extract_archive(path: str):
             pathlib.Path(path).mkdir(parents=True, exist_ok=True)
             click.echo(f'Created {path}')
         os.chdir(os.path.dirname(path))
-        print(tar('-xzf', expand_vars_user(tarfile_output_path)))
+        print(tar('-xzf', expand_vars_user(output_path)))
 
 
 def compress(path: str):
@@ -171,7 +171,7 @@ def store(ctx, application_names, clear_cache):
     expanded_output_path = expand_vars_user(ctx.obj['output_path'])
 
     if clear_cache:
-        extract_archive(expanded_output_path)
+        extract_archive(expanded_output_path, tarfile_output_path)
 
     for sync_path in get_sync_paths(applications, expanded_output_path, application_names):
         local_path, archive_path, path, application_name = sync_path
@@ -190,7 +190,7 @@ def load(ctx, application_names):
     expanded_output_path = expand_vars_user(ctx.obj['output_path'])
 
     if not ctx.obj['dry_run']:
-        extract_archive(expanded_output_path)
+        extract_archive(expanded_output_path, tarfile_output_path)
 
     for sync_path in get_sync_paths(applications, expanded_output_path, application_names):
         local_path, archive_path, path, application_name = sync_path
