@@ -18,8 +18,7 @@
         "name": "config",
         "type": "folder",
         "platforms": {
-          "darwin": "$HOME/Library/Application Support/JetBrains/PyCharm2020.2",
-          "linux2": null
+          "darwin": "$HOME/Library/Application Support/JetBrains/PyCharm2020.2"
         }
       }
     ]
@@ -32,8 +31,7 @@
         "name": "config",
         "type": "folder",
         "platforms": {
-          "darwin": "$HOME/Library/Application Support/JetBrains/WebStorm2020.2",
-          "linux": null
+          "darwin": "$HOME/Library/Application Support/JetBrains/WebStorm2020.2"
         }
       }
     ]
