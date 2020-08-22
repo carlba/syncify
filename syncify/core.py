@@ -177,7 +177,11 @@ def store(ctx, application_names, clear_cache):
         local_path, archive_path, path, application_name = sync_path
         click.secho(f'Syncing path {path["name"]} for application {application_name} ',
                     fg='green')
-        rsync_to(local_path, archive_path, path['type'], ctx.obj['dry_run'])
+
+        if not os.path.exists(local_path):
+            click.secho(f'{local_path} does not exist moving on', fg='yellow')
+        else:
+            rsync_to(local_path, archive_path, path['type'], ctx.obj['dry_run'])
 
     if not ctx.obj['dry_run']:
         compress(expanded_output_path)
@@ -196,7 +200,10 @@ def load(ctx, application_names):
         local_path, archive_path, path, application_name = sync_path
         click.secho(f'Syncing path {path["name"]} for application {application_name} ',
                     fg='green')
-        rsync_to(archive_path, local_path, path['type'], ctx.obj['dry_run'])
+        if not os.path.exists(archive_path):
+            click.secho(f'{archive_path} does not exist moving on', fg='yellow')
+        else:
+            rsync_to(archive_path, local_path, path['type'], ctx.obj['dry_run'])
 
 
 def test_cli_store():
