@@ -136,5 +136,32 @@
         }
       }
     ]
+  },
+  "dash": {
+    "description": "Dash Settings",
+    "url": "none",
+    "paths": [
+      {
+        "name": "config",
+        "type": "folder",
+        "platforms": {
+          "darwin": "$HOME/Library/Application Support/Dash"
+        }
+      },
+      {
+        "name": "config",
+        "type": "file",
+        "platforms": {
+          "darwin": "$HOME/Library/Preferences/com.kapeli.dash.plist"
+        }
+      },
+      {
+        "name": "config",
+        "type": "file",
+        "platforms": {
+          "darwin": "$HOME/Library/Preferences/com.kapeli.dashdoc.plist"
+        }
+      }
+    ]
   }
 }
