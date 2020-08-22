@@ -19,6 +19,5 @@ requests==2.24.0
 scandir==1.10.0
 sh==1.12.14
 six==1.14.0
--e git+git@github.com:carlba/syncify.git@653e3c557bd0c7d8cc8b111dd26b8a7165bb91fb#egg=syncify
 toml==0.10.1
 urllib3==1.25.10
