@@ -120,10 +120,10 @@
     "url": "https://code.visualstudio.com/docs/getstarted/settings",
     "paths": [
       {
-        "name": "settings_file",
-        "type": "file",
+        "name": "user_settings",
+        "type": "folder",
         "platforms": {
-          "darwin": "$HOME/Library/Application Support/Code/User/settings.json",
+          "darwin": "$HOME/Library/Application Support/Code/User",
           "linux2": "$HOME/.config/Code/User/settings.json"
         }
       },

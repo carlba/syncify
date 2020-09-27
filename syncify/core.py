@@ -107,7 +107,7 @@ def ignore_file(tarinfo):
 
 
 def process_output(line):
-    click.echo(line, nl=False)
+    click.secho(line, nl=False, fg='green')
 
 
 def rsync_to(src: pathlib.Path, dst: pathlib.Path, filetype: str, dry_run: bool):
