@@ -163,5 +163,38 @@
         }
       }
     ]
+  },
+  "typora": {
+    "description": "Typora",
+    "url": "https://typora.io",
+    "paths": [
+      {
+        "name": "keyfile",
+        "type": "file",
+        "platforms": {
+          "darwin": "$HOME/Library/Application Support/com.apple.sharedfilelist/com.apple.LSSharedFileList.ApplicationRecentDocuments/abnerworks.typora.sfl2"
+        }
+      },
+      {
+        "name": "config",
+        "type": "file",
+        "platforms": {
+          "darwin": "$HOME/./Library/Preferences/abnerworks.Typora.plist"
+        }
+      }
+    ]
+  },
+  "upic": {
+    "description": "uPic",
+    "url": "https://github.com/gee1k/uPic",
+    "paths": [
+      {
+        "name": "config",
+        "type": "file",
+        "platforms": {
+          "darwin": "$HOME/Library/Preferences/com.svend.uPic.plist"
+        }
+      }
+    ]
   }
 }
