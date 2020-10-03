@@ -11,31 +11,6 @@
       }
     ]
   },
-  "pycharm": {
-    "description": "PyCharm2020.2",
-    "paths": [
-      {
-        "name": "config",
-        "type": "folder",
-        "platforms": {
-          "darwin": "$HOME/Library/Application Support/JetBrains/PyCharm2020.2"
-        }
-      }
-    ]
-  },
-  "webstorm": {
-    "description": "WebStorm2020.1",
-    "url": "https://www.jetbrains.com/help/webstorm/directories-used-by-webstorm-to-store-settings-caches-plugins-and-logs.html",
-    "paths": [
-      {
-        "name": "config",
-        "type": "folder",
-        "platforms": {
-          "darwin": "$HOME/Library/Application Support/JetBrains/WebStorm2020.1"
-        }
-      }
-    ]
-  },
   "development": {
     "description": "My development stuff",
     "url": "https://github.com/carlba",
