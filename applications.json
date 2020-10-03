@@ -123,13 +123,6 @@
         }
       },
       {
-        "name": "com.kapeli.dash.plis",
-        "type": "file",
-        "platforms": {
-          "darwin": "$HOME/Library/Preferences/com.kapeli.dash.plist"
-        }
-      },
-      {
         "name": "com.kapeli.dashdoc.plist",
         "type": "file",
         "platforms": {
