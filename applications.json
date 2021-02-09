@@ -134,6 +134,7 @@
   "typora": {
     "description": "Typora",
     "url": "https://typora.io",
+    "paths": [    
       {
         "name": "config",
         "type": "file",
