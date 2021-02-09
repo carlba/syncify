@@ -134,14 +134,6 @@
   "typora": {
     "description": "Typora",
     "url": "https://typora.io",
-    "paths": [
-      {
-        "name": "keyfile",
-        "type": "file",
-        "platforms": {
-          "darwin": "$HOME/Library/Application Support/com.apple.sharedfilelist/com.apple.LSSharedFileList.ApplicationRecentDocuments/abnerworks.typora.sfl2"
-        }
-      },
       {
         "name": "config",
         "type": "file",
