@@ -196,6 +196,13 @@
         "platforms": {
           "darwin": "$HOME/.oh-my-zsh"
         }
+      },
+      {
+        "name": "vivid",
+        "type": "folder",
+        "platforms": {
+          "darwin": "$HOME/.config/vivid"
+        }
       }
     ]
   }
