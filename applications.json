@@ -155,6 +155,13 @@
         "platforms": {
           "darwin": "$HOME/.tmux.conf"
         }
+      },
+      {
+        "name": "tmuxp config",
+        "type": "folder",
+        "platforms": {
+          "darwin": "$HOME/.config/tmuxp"
+        }
       }
     ]
   },
