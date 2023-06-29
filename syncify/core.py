@@ -1,5 +1,6 @@
 # coding=utf-8
 
+import json
 import sys
 import shutil
 import os
@@ -12,8 +13,7 @@ import grp
 import fnmatch
 import requests
 from click.testing import CliRunner
-# noinspection PyUnresolvedReferences
-from sh import rsync, ssh, git, ErrorReturnCode_128, tar, pkill, hdiutil, open
+from sh import rsync, ssh, git, ErrorReturnCode_128, tar, pkill, hdiutil
 
 from .logger import create_logger
 
@@ -27,21 +27,30 @@ script_dir_path = os.path.dirname(os.path.realpath(__file__))
 logger = create_logger()
 
 
-def read_settings():
-    r = requests.get('https://raw.githubusercontent.com/carlba/syncify/master/settings.json',
+def read_settings(type):
+    if type == 'local':
+        with open(os.path.join(os.getcwd(), 'settings.json'), 'r') as f:
+            return json.load(f)
+
+    else:
+        r = requests.get('https://raw.githubusercontent.com/carlba/syncify/master/settings.json',
                      headers=headers)
-    return r.json()
+        return r.json()
 
 
-def read_applications():
-    return requests.get(
+def read_applications(type):
+    if type == 'local':
+        with open(os.path.join(os.getcwd(), 'applications.json'), 'r') as f:
+            return json.load(f)
+    else:
+        return requests.get(
         'https://raw.githubusercontent.com/carlba/syncify/master/applications.json',
         headers=headers).json()
 
 
-settings = read_settings()
+settings = read_settings('local')
 tarfile_output_path = settings['tarfile_output_path']
-applications = read_applications()
+applications = read_applications('local')
 excludes = settings['excludes']
 
 
@@ -183,8 +192,8 @@ def store(ctx, application_names, clear_cache):
         else:
             rsync_to(local_path, archive_path, path['type'], ctx.obj['dry_run'])
 
-    if not ctx.obj['dry_run']:
-        compress(expanded_output_path)
+    # if not ctx.obj['dry_run']:
+    #     compress(expanded_output_path)
 
 
 @cli.command()
