@@ -193,8 +193,8 @@ def store(ctx, application_names, clear_cache):
         else:
             rsync_to(local_path, archive_path, path['type'], ctx.obj['dry_run'])
 
-    if not ctx.obj['dry_run']:
-        compress(expanded_output_path)
+    # if not ctx.obj['dry_run']:
+    #     compress(expanded_output_path)
 
 
 @cli.command()

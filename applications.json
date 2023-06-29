@@ -157,5 +157,32 @@
         }
       }
     ]
+  },
+  "ohmyzsh": {
+    "description": "ohmyzsh",
+    "url": "none",
+    "paths": [
+      {
+        "name": ".zprofile",
+        "type": "file",
+        "platforms": {
+          "darwin": "$HOME/.zprofile"
+        }
+      },
+      {
+        "name": ".zshrc",
+        "type": "file",
+        "platforms": {
+          "darwin": "$HOME/.zshrc"
+        }
+      },
+      {
+        "name": ".p10k.zsh",
+        "type": "file",
+        "platforms": {
+          "darwin": "$HOME/.p10k.zsh"
+        }
+      }
+    ]
   }
 }
