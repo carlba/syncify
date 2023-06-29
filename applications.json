@@ -182,6 +182,13 @@
         "platforms": {
           "darwin": "$HOME/.p10k.zsh"
         }
+      },
+      {
+        "name": "ohmyzsh",
+        "type": "folder",
+        "platforms": {
+          "darwin": "$HOME/.oh-my-zsh"
+        }
       }
     ]
   }
