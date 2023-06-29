@@ -20,6 +20,7 @@
     "cache",
     "facebook_data",
     "*.mp4",
-    "social-log/messages"
+    "social-log/messages",
+    "*.sock"
   ]
 }

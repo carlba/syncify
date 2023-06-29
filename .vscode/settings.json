@@ -1,0 +1,17 @@
+{
+    "files.associations": {
+        "*.yaml": "home-assistant"
+    },
+    "cSpell.words": [
+        "dashdoc",
+        "fnmatch",
+        "getgrgid",
+        "gname",
+        "googlecode",
+        "kapeli",
+        "secho",
+        "sharedfilelist",
+        "svend"
+    ],
+    "python.pythonPath": "venv/bin/python"
+}

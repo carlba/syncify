@@ -28,6 +28,13 @@
         "platforms": {
           "all": "$HOME/bsdev"
         }
+      },
+      {
+        "name": "pocketlaw",
+        "type": "folder",
+        "platforms": {
+          "all": "$HOME/pocketlaw"
+        }
       }
     ]
   },
@@ -131,35 +138,28 @@
       }
     ]
   },
-  "typora": {
-    "description": "Typora",
-    "url": "https://typora.io",
+  "home": {
+    "description": "Home folder",
+    "url": "none",
     "paths": [
       {
-        "name": "keyfile",
-        "type": "file",
+        "name": "home",
+        "type": "folder",
         "platforms": {
-          "darwin": "$HOME/Library/Application Support/com.apple.sharedfilelist/com.apple.LSSharedFileList.ApplicationRecentDocuments/abnerworks.typora.sfl2"
-        }
-      },
-      {
-        "name": "config",
-        "type": "file",
-        "platforms": {
-          "darwin": "$HOME/./Library/Preferences/abnerworks.Typora.plist"
+          "darwin": "$HOME"
         }
       }
     ]
   },
-  "upic": {
-    "description": "uPic",
-    "url": "https://github.com/gee1k/uPic",
+  "tmux": {
+    "description": "tmux",
+    "url": "none",
     "paths": [
       {
-        "name": "config",
-        "type": "file",
+        "name": "",
+        "type": "folder",
         "platforms": {
-          "darwin": "$HOME/Library/Preferences/com.svend.uPic.plist"
+          "darwin": "$HOME"
         }
       }
     ]
