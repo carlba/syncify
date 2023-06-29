@@ -21,6 +21,8 @@
     "facebook_data",
     "*.mp4",
     "social-log/messages",
-    "*.sock"
+    "*.sock",
+    "Containers",
+    "Group Containers"
   ]
 }

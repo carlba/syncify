@@ -138,28 +138,22 @@
       }
     ]
   },
-  "home": {
-    "description": "Home folder",
-    "url": "none",
-    "paths": [
-      {
-        "name": "home",
-        "type": "folder",
-        "platforms": {
-          "darwin": "$HOME"
-        }
-      }
-    ]
-  },
   "tmux": {
     "description": "tmux",
     "url": "none",
     "paths": [
       {
-        "name": "",
+        "name": "tmux",
         "type": "folder",
         "platforms": {
-          "darwin": "$HOME"
+          "darwin": "$HOME/.tmux"
+        }
+      },
+      {
+        "name": "tmux config",
+        "type": "file",
+        "platforms": {
+          "darwin": "$HOME/.tmux.conf"
         }
       }
     ]

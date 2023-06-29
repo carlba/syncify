@@ -93,6 +93,7 @@ def compress(path: str):
             expand_vars_user(tarfile_output_path), 'syncify', _bg=True)
 
 
+
 def clear_cache(path: str):
     shutil.rmtree(path, ignore_errors=False)
     pathlib.Path(path).mkdir(parents=True, exist_ok=True)
@@ -192,8 +193,8 @@ def store(ctx, application_names, clear_cache):
         else:
             rsync_to(local_path, archive_path, path['type'], ctx.obj['dry_run'])
 
-    # if not ctx.obj['dry_run']:
-    #     compress(expanded_output_path)
+    if not ctx.obj['dry_run']:
+        compress(expanded_output_path)
 
 
 @cli.command()
@@ -202,8 +203,8 @@ def store(ctx, application_names, clear_cache):
 def load(ctx, application_names):
     expanded_output_path = expand_vars_user(ctx.obj['output_path'])
 
-    if not ctx.obj['dry_run']:
-        extract_archive(expanded_output_path, tarfile_output_path)
+    # if not ctx.obj['dry_run']:
+    #     extract_archive(expanded_output_path, tarfile_output_path)
 
     for sync_path in get_sync_paths(applications, expanded_output_path, application_names):
         local_path, archive_path, path, application_name = sync_path
