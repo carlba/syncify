@@ -218,5 +218,18 @@
         }
       }
     ]
+  },
+  "alfred": {
+    "description": "alfred",
+    "url": "none",
+    "paths": [
+      {
+        "name": "app_support",
+        "type": "folder",
+        "platforms": {
+          "darwin": "$HOME/Library/Application Support/Alfred"
+        }
+      }
+    ]
   }
 }
