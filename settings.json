@@ -1,5 +1,6 @@
 {
   "tarfile_output_path": "$HOME/gdrive/transfer/syncify.tar.gz",
+  "compress": "false",
   "excludes": [
     "/media/Windows/Users/genzo/Dropbox/transfer",
     ".cache",
