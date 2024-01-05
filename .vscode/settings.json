@@ -1,17 +1,15 @@
 {
-    "files.associations": {
-        "*.yaml": "home-assistant"
-    },
-    "cSpell.words": [
-        "dashdoc",
-        "fnmatch",
-        "getgrgid",
-        "gname",
-        "googlecode",
-        "kapeli",
-        "secho",
-        "sharedfilelist",
-        "svend"
-    ],
-    "python.pythonPath": "venv/bin/python"
+  "cSpell.words": [
+    "dashdoc",
+    "fnmatch",
+    "getgid",
+    "getgrgid",
+    "gname",
+    "googlecode",
+    "kapeli",
+    "secho",
+    "sharedfilelist",
+    "svend"
+  ],
+  "black-formatter.args": ["--skip-string-normalizatio"]
 }
