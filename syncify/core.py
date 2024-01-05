@@ -6,6 +6,7 @@ import shutil
 import os
 import contextlib
 import pathlib
+from typing import Dict, List, TypedDict
 
 import click
 import psutil
@@ -13,14 +14,17 @@ import grp
 import fnmatch
 import requests
 from click.testing import CliRunner
-from sh import rsync, ssh, git, ErrorReturnCode_128, tar, pkill, hdiutil
+from sh import rsync, ssh, git, ErrorReturnCode_128, tar, pkill, hdiutil # type: ignore
 
 from .logger import create_logger
+from typing import Dict, KeysView
 
 headers = {
     "Cache-Control": "no-cache",
     "Pragma": "no-cache"
 }
+
+application = TypedDict('Application', {'description': str, 'url': str, 'paths': List[Dict[str, str]]})
 
 script_dir_path = os.path.dirname(os.path.realpath(__file__))
 
@@ -144,7 +148,7 @@ def find_platform_path(path):
         return path['platforms'][sys.platform]
 
 
-def get_sync_paths(applications: [], expanded_output_path: str, application_names: [] = None):
+def get_sync_paths(applications: Dict[str, application], expanded_output_path: str, application_names: KeysView[str]):
     if not application_names:
         application_names = applications.keys()
 
@@ -219,14 +223,14 @@ def load(ctx, application_names):
 def test_cli_store():
     pass
 
-    runner = click.testing.CliRunner()
+    runner = click.testing.CliRunner() # type: ignore
     result = runner.invoke(load, ['pycharm'], catch_exceptions=False)
     print(result)
 
 
 def main():
     if 'DEBUG' in os.environ and os.environ['DEBUG'] == 1:
-        runner = click.testing.CliRunner()
+        runner = click.testing.CliRunner() # type: ignore
         result = runner.invoke(cli, ['--output_path', '/Users/cada/.config/syncify', 'store'],
                                catch_exceptions=False)
         print(result)
