@@ -33,7 +33,8 @@ logger = create_logger()
 
 def read_settings(type):
     if type == 'local':
-        with open(os.path.join(os.getcwd(), 'settings.json'), 'r') as f:
+        logger.info(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+        with open(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'settings.json'), 'r') as f:
             return json.load(f)
 
     else:
@@ -44,7 +45,7 @@ def read_settings(type):
 
 def read_applications(type):
     if type == 'local':
-        with open(os.path.join(os.getcwd(), 'applications.json'), 'r') as f:
+        with open(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'applications.json'), 'r') as f:
             return json.load(f)
     else:
         return requests.get(
