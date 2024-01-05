@@ -121,7 +121,7 @@ def ignore_file(tarinfo):
 
 
 def process_output(line):
-    click.secho(line, nl=False, fg='green')
+    click.secho(line, nl=False, fg='blue')
 
 
 def rsync_to(src: pathlib.Path, dst: pathlib.Path, filetype: str, dry_run: bool):
@@ -189,6 +189,8 @@ def store(ctx, application_names, clear_cache):
 
     for sync_path in get_sync_paths(applications, expanded_output_path, application_names):
         local_path, archive_path, path, application_name = sync_path
+        click.secho(f'='*60,
+                    fg='white')
         click.secho(f'Syncing path {path["name"]} for application {application_name} ',
                     fg='green')
 
