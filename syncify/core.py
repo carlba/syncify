@@ -19,43 +19,20 @@ from sh import rsync, ssh, git, ErrorReturnCode_128, tar, pkill, hdiutil # type:
 from .logger import create_logger
 from typing import Dict, KeysView
 
+from .applications import Application, applications
+from .settings import settings
+
 headers = {
     "Cache-Control": "no-cache",
     "Pragma": "no-cache"
 }
-
-application = TypedDict('Application', {'description': str, 'url': str, 'paths': List[Dict[str, str]]})
 
 script_dir_path = os.path.dirname(os.path.realpath(__file__))
 
 logger = create_logger()
 
 
-def read_settings(type):
-    if type == 'local':
-        logger.info(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
-        with open(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'settings.json'), 'r') as f:
-            return json.load(f)
-
-    else:
-        r = requests.get('https://raw.githubusercontent.com/carlba/syncify/master/settings.json',
-                     headers=headers)
-        return r.json()
-
-
-def read_applications(type):
-    if type == 'local':
-        with open(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'applications.json'), 'r') as f:
-            return json.load(f)
-    else:
-        return requests.get(
-        'https://raw.githubusercontent.com/carlba/syncify/master/applications.json',
-        headers=headers).json()
-
-
-settings = read_settings('local')
 tarfile_output_path = settings['tarfile_output_path']
-applications = read_applications('local')
 excludes = settings['excludes']
 
 
@@ -149,7 +126,7 @@ def find_platform_path(path):
         return path['platforms'][sys.platform]
 
 
-def get_sync_paths(applications: Dict[str, application], expanded_output_path: str, application_names: KeysView[str]):
+def get_sync_paths(applications: Dict[str, Application], expanded_output_path: str, application_names: KeysView[str]):
     if not application_names:
         application_names = applications.keys()
 

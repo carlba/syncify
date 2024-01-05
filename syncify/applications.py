@@ -1,4 +1,11 @@
-{
+
+from typing import List, NotRequired, Optional, TypedDict, Dict
+
+Platform = TypedDict('Platform', {'darwin': NotRequired[str], 'linux2': NotRequired[str], 'all': NotRequired[str]})
+Path = TypedDict('Path', {'name': str, 'type': str, 'platforms': Platform})
+Application = TypedDict('Application', {'description': str, 'url': NotRequired[str], 'paths': List[Path]})
+
+applications: Dict[str, Application] = {
   "transgui": {
     "description": "Transmission Remote GUI",
     "paths": [
