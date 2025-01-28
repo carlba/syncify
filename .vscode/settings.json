@@ -2,6 +2,7 @@
   "cSpell.words": [
     "dashdoc",
     "fnmatch",
+    "genzo",
     "getgid",
     "getgrgid",
     "gname",
@@ -11,5 +12,4 @@
     "sharedfilelist",
     "svend"
   ],
-  "black-formatter.args": ["--skip-string-normalizatio"]
 }
