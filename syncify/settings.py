@@ -4,8 +4,8 @@ from typing import TypedDict, List
 Settings = TypedDict('Settings', {'tarfile_output_path': str, 'compress': bool, 'excludes': List[str]})
 
 settings = {
-  "tarfile_output_path": "/Volumes/syncify.tar.gz",
-  "compress": False,
+  "tarfile_output_path": "~/gdrive/Backup/syncify.tar.gz",
+  "compress": True,
   "excludes": [
     "/media/Windows/Users/genzo/Dropbox/transfer",
     ".cache",

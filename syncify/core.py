@@ -22,6 +22,11 @@ from typing import Dict, KeysView
 from .applications import Application, applications
 from .settings import settings
 
+enabled_applications = {
+    name: app for name, app in applications.items()
+    if 'enabled' not in app or app['enabled']
+}
+
 headers = {
     "Cache-Control": "no-cache",
     "Pragma": "no-cache"
@@ -67,12 +72,10 @@ def extract_archive(path: str, output_path: str):
 
 
 def compress(path: str):
+    click.echo(path)
     with remember_cwd():
-        if "pigz" in (p.name() for p in psutil.process_iter()):
-            raise click.ClickException('Compression already active try again later')
         os.chdir(os.path.dirname(path))
-        tar('--use-compress-program', '/usr/local/bin/pigz', '-czf',
-            expand_vars_user(tarfile_output_path), 'syncify', _bg=True)
+        tar('-czf', expand_vars_user(tarfile_output_path), 'syncify', _bg=True)
 
 
 
@@ -165,7 +168,7 @@ def store(ctx, application_names, clear_cache):
     if clear_cache:
         extract_archive(expanded_output_path, tarfile_output_path)
 
-    for sync_path in get_sync_paths(applications, expanded_output_path, application_names):
+    for sync_path in get_sync_paths(enabled_applications, expanded_output_path, application_names):
         local_path, archive_path, path, application_name = sync_path
         click.secho(f'='*60,
                     fg='white')
@@ -190,7 +193,7 @@ def load(ctx, application_names):
     if not ctx.obj['dry_run'] and settings['compress']:
         extract_archive(expanded_output_path, tarfile_output_path)
 
-    for sync_path in get_sync_paths(applications, expanded_output_path, application_names):
+    for sync_path in get_sync_paths(enabled_applications, expanded_output_path, application_names):
         local_path, archive_path, path, application_name = sync_path
         click.secho(f'Syncing path {path["name"]} for application {application_name} ',
                     fg='green')
@@ -199,6 +202,12 @@ def load(ctx, application_names):
         else:
             rsync_to(archive_path, local_path, path['type'], ctx.obj['dry_run'])
 
+@cli.command()
+@click.argument('application_names', nargs=-1)
+@click.pass_context
+def list(ctx, application_names):
+    print('Applications: \n' + '\n'.join(applications.keys()) + '\n')
+    print('Enabled Applications: \n' + '\n'.join(enabled_applications.keys()))
 
 def test_cli_store():
     pass

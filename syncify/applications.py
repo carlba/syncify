@@ -30,13 +30,6 @@ applications: Dict[str, Application] = {
         }
       },
       {
-        "name": "work",
-        "type": "folder",
-        "platforms": {
-          "all": "$HOME/bsdev"
-        }
-      },
-      {
         "name": "pocketlaw",
         "type": "folder",
         "platforms": {
@@ -61,6 +54,7 @@ applications: Dict[str, Application] = {
   "calibre": {
     "description": "Calibre",
     "url": "https://manual.calibre-ebook.com/faq.html",
+    "enabled": False,
     "paths": [
       {
         "name": "config",
@@ -94,6 +88,7 @@ applications: Dict[str, Application] = {
   "hammerspoon": {
     "description": "Hammerspoon settings",
     "url": "none",
+    "enabled": False,
     "paths": [
       {
         "name": "config",
@@ -128,6 +123,7 @@ applications: Dict[str, Application] = {
   "dash": {
     "description": "Dash Settings",
     "url": "none",
+    "enabled": False,
     "paths": [
       {
         "name": "config",
@@ -191,13 +187,6 @@ applications: Dict[str, Application] = {
         }
       },
       {
-        "name": ".p10k.zsh",
-        "type": "file",
-        "platforms": {
-          "darwin": "$HOME/.p10k.zsh"
-        }
-      },
-      {
         "name": "ohmyzsh",
         "type": "folder",
         "platforms": {
@@ -209,19 +198,6 @@ applications: Dict[str, Application] = {
         "type": "folder",
         "platforms": {
           "darwin": "$HOME/.config/vivid"
-        }
-      }
-    ]
-  },
-  "browserosaurus": {
-    "description": "Browserosaurus",
-    "url": "none",
-    "paths": [
-      {
-        "name": "app_support",
-        "type": "folder",
-        "platforms": {
-          "darwin": "$HOME/Library/Application Support/Browserosaurus"
         }
       }
     ]
