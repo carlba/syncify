@@ -14,91 +14,26 @@ import grp
 import fnmatch
 import requests
 from click.testing import CliRunner
-from sh import rsync, ssh, git, ErrorReturnCode_128, tar, pkill, hdiutil # type: ignore
+from sh import rsync
+
+from syncify.utils import compress, create_tar_path, expand_vars_user, extract_archive, find_platform_path, writeHeader  # type: ignore
 
 from .logger import create_logger
 from typing import Dict, KeysView
 
-from .applications import Application, applications
+from .applications import Application, applications, Path
 from .settings import settings
 
-enabled_applications = {
-    name: app for name, app in applications.items()
-    if 'enabled' not in app or app['enabled']
+ENABLED_APPLICATIONS = {
+    name: app for name, app in applications.items() if 'enabled' not in app or app['enabled']
 }
 
-headers = {
-    "Cache-Control": "no-cache",
-    "Pragma": "no-cache"
-}
-
-script_dir_path = os.path.dirname(os.path.realpath(__file__))
-
-logger = create_logger()
-
-
-tarfile_output_path = settings['tarfile_output_path']
-excludes = settings['excludes']
-
-
-@contextlib.contextmanager
-def remember_cwd():
-    curdir = os.getcwd()
-    try:
-        yield
-    finally:
-        os.chdir(curdir)
-
-
-def expand_vars_user(path):
-    return os.path.expandvars(os.path.expanduser(path))
-
-
-def create_tar_path(output_path, application_name, path_name):
-    return os.path.join(output_path, f'{application_name}_{path_name}')
-
-
-def extract_archive(path: str, output_path: str):
-    with remember_cwd():
-        if os.path.isdir(path):
-            shutil.rmtree(path)
-            pathlib.Path(path).mkdir(parents=True, exist_ok=True)
-            click.echo(f'Recreated {path}')
-        else:
-            pathlib.Path(path).mkdir(parents=True, exist_ok=True)
-            click.echo(f'Created {path}')
-        os.chdir(os.path.dirname(path))
-        print(tar('-xzf', expand_vars_user(output_path)))
-
-
-def compress(path: str):
-    click.echo(path)
-    with remember_cwd():
-        os.chdir(os.path.dirname(path))
-        tar('-czf', expand_vars_user(tarfile_output_path), 'syncify', _bg=True)
-
-
-
-def clear_cache(path: str):
-    shutil.rmtree(path, ignore_errors=False)
-    pathlib.Path(path).mkdir(parents=True, exist_ok=True)
-    click.echo('Cache is cleared!')
-
-
-def reset_tar_info(members):
-    for tarinfo in members:
-        tarinfo.uid = os.getuid()
-        tarinfo.gid = os.getgid()
-        tarinfo.uname = os.environ['USER']
-        tarinfo.gname = grp.getgrgid(os.getgid()).gr_name
-        yield tarinfo
-
-
-def ignore_file(tarinfo):
-    if fnmatch.fnmatch(tarinfo.name, '*/venv'):
-        print('Matching' + tarinfo.name)
-    else:
-        return tarinfo
+HEADERS = {"Cache-Control": "no-cache", "Pragma": "no-cache"}
+SCRIPT_DIR_PATH = os.path.dirname(os.path.realpath(__file__))
+CACHE_PATH = expand_vars_user('$HOME/.config/syncify')
+LOGGER = create_logger()
+TARFILE_OUTPUT_PATH = expand_vars_user(settings['tarfile_output_path'])
+EXCLUDES = settings['excludes']
 
 
 def process_output(line):
@@ -106,6 +41,27 @@ def process_output(line):
 
 
 def rsync_to(src: pathlib.Path, dst: pathlib.Path, filetype: str, dry_run: bool):
+    """
+    Synchronize files or directories from a source to a destination using rsync.
+
+    Parameters:
+    src (pathlib.Path): The source path to sync from.
+    dst (pathlib.Path): The destination path to sync to.
+    filetype (str): The type of the source, either 'file' or 'folder'.
+    dry_run (bool): If True, perform a trial run with no changes made.
+
+    Rsync options:
+        - -r: Recurse into directories.
+        - -l: Copy symlinks as symlinks.
+        - -t: Preserve modification times.
+        - --max-size=500m: Skip files larger than 500 megabytes.
+        - --stats: Give some file-transfer stats.
+        - --exclude: Exclude files matching the specified patterns.
+        - --delete: Delete extraneous files from destination directories.
+
+    Returns:
+    None
+    """
     if filetype == 'file':
         dst.parent.mkdir(parents=True, exist_ok=True)
 
@@ -114,22 +70,25 @@ def rsync_to(src: pathlib.Path, dst: pathlib.Path, filetype: str, dry_run: bool)
 
     click.secho(f'Syncing path from {src_string} to {dst_string}', fg='green')
 
-    exclude_params = zip(len(excludes) * ['--exclude'], excludes)
+    exclude_params = zip(len(EXCLUDES) * ['--exclude'], EXCLUDES)
     if not dry_run:
-        rsync('-rlt', '--max-size=200m', '--stats', src_string, dst_string, delete=True,
-              *exclude_params, _out=process_output)
+        rsync(
+            '-rlt',
+            '--max-size=500m',
+            '--stats',
+            src_string,
+            dst_string,
+            delete=True,
+            *exclude_params,
+            _out=process_output,
+        )
 
 
-def find_platform_path(path):
-    if 'all' in path['platforms']:
-        return path['platforms']['all']
-    elif sys.platform not in path['platforms'] or not path['platforms'][sys.platform]:
-        return False
-    else:
-        return path['platforms'][sys.platform]
-
-
-def get_sync_paths(applications: Dict[str, Application], expanded_output_path: str, application_names: KeysView[str]):
+def get_sync_paths(
+    applications: Dict[str, Application],
+    expanded_output_path: str,
+    application_names: KeysView[str],
+):
     if not application_names:
         application_names = applications.keys()
 
@@ -140,8 +99,9 @@ def get_sync_paths(applications: Dict[str, Application], expanded_output_path: s
             # pkill(application_name)
             for path in applications[application_name]['paths']:
                 expanded_platform_path = pathlib.Path(expand_vars_user(find_platform_path(path)))
-                archive_path = pathlib.Path(create_tar_path(expanded_output_path,
-                                                            application_name, path['name']))
+                archive_path = pathlib.Path(
+                    create_tar_path(expanded_output_path, application_name, path['name'])
+                )
 
                 if path['type'] == 'file':
                     archive_path = archive_path / expanded_platform_path.name
@@ -149,8 +109,12 @@ def get_sync_paths(applications: Dict[str, Application], expanded_output_path: s
 
 
 @click.group()
-@click.option('--output_path', '-o', type=click.Path(exists=True),
-              default=expand_vars_user('$HOME/.config/syncify'))
+@click.option(
+    '--output_path',
+    '-o',
+    type=click.Path(exists=True),
+    default=expand_vars_user('$HOME/.config/syncify'),
+)
 @click.option('--dry-run', is_flag=True, default=False)
 @click.pass_context
 def cli(ctx, output_path, dry_run):
@@ -166,14 +130,12 @@ def store(ctx, application_names, clear_cache):
     expanded_output_path = expand_vars_user(ctx.obj['output_path'])
 
     if clear_cache:
-        extract_archive(expanded_output_path, tarfile_output_path)
+        extract_archive(expanded_output_path, TARFILE_OUTPUT_PATH)
 
-    for sync_path in get_sync_paths(enabled_applications, expanded_output_path, application_names):
+    for sync_path in get_sync_paths(ENABLED_APPLICATIONS, expanded_output_path, application_names):
         local_path, archive_path, path, application_name = sync_path
-        click.secho(f'='*60,
-                    fg='white')
-        click.secho(f'Syncing path {path["name"]} for application {application_name} ',
-                    fg='green')
+        writeHeader()
+        click.secho(f'Syncing path {path["name"]} for application {application_name} ', fg='green')
 
         if not os.path.exists(local_path):
             click.secho(f'{local_path} does not exist moving on', fg='yellow')
@@ -181,7 +143,7 @@ def store(ctx, application_names, clear_cache):
             rsync_to(local_path, archive_path, path['type'], ctx.obj['dry_run'])
 
     if not ctx.obj['dry_run'] and settings['compress']:
-        compress(expanded_output_path)
+        compress(expanded_output_path, TARFILE_OUTPUT_PATH)
 
 
 @cli.command()
@@ -191,37 +153,37 @@ def load(ctx, application_names):
     expanded_output_path = expand_vars_user(ctx.obj['output_path'])
 
     if not ctx.obj['dry_run'] and settings['compress']:
-        extract_archive(expanded_output_path, tarfile_output_path)
+        extract_archive(expanded_output_path, TARFILE_OUTPUT_PATH)
 
-    for sync_path in get_sync_paths(enabled_applications, expanded_output_path, application_names):
+    for sync_path in get_sync_paths(ENABLED_APPLICATIONS, expanded_output_path, application_names):
         local_path, archive_path, path, application_name = sync_path
-        click.secho(f'Syncing path {path["name"]} for application {application_name} ',
-                    fg='green')
+        click.secho(f'Syncing path {path["name"]} for application {application_name} ', fg='green')
         if not os.path.exists(archive_path):
             click.secho(f'{archive_path} does not exist moving on', fg='yellow')
         else:
             rsync_to(archive_path, local_path, path['type'], ctx.obj['dry_run'])
+
 
 @cli.command()
 @click.argument('application_names', nargs=-1)
 @click.pass_context
 def list(ctx, application_names):
     print('Applications: \n' + '\n'.join(applications.keys()) + '\n')
-    print('Enabled Applications: \n' + '\n'.join(enabled_applications.keys()))
+    print('Enabled Applications: \n' + '\n'.join(ENABLED_APPLICATIONS.keys()))
+
 
 def test_cli_store():
-    pass
-
-    runner = click.testing.CliRunner() # type: ignore
+    runner = click.testing.CliRunner()  # type: ignore
     result = runner.invoke(load, ['pycharm'], catch_exceptions=False)
     print(result)
 
 
 def main():
     if 'DEBUG' in os.environ and os.environ['DEBUG'] == 1:
-        runner = click.testing.CliRunner() # type: ignore
-        result = runner.invoke(cli, ['--output_path', '/Users/cada/.config/syncify', 'store'],
-                               catch_exceptions=False)
+        runner = click.testing.CliRunner()  # type: ignore
+        result = runner.invoke(
+            cli, ['--output_path', '/Users/cada/.config/syncify', 'store'], catch_exceptions=False
+        )
         print(result)
     else:
         cli(obj={})
