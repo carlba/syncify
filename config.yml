@@ -1,0 +1,30 @@
+syncify_applications:
+  calibre:
+    description: 'Calibre settings'
+    enabled: true
+    restic_tags:
+      - app:calibre
+      - source:desktop
+    paths:
+      - name: config
+        type: folder
+        platforms:
+          darwin: '/Users/cbackstrom/Library/Preferences/calibre'
+          linux: '/home/cbackstrom/.config/calibre'
+      - name: library
+        type: folder
+        platforms:
+          darwin: '/Users/cbackstrom/Calibre Library'
+          linux: '/home/cbackstrom/Calibre Library'
+  wezterm:
+    description: 'WezTerm terminal configuration'
+    enabled: true
+    restic_tags:
+      - app:wezterm
+      - source:desktop
+    paths:
+      - name: config
+        type: file
+        platforms:
+          darwin: '~/.wezterm.lua'
+          linux: '~/.wezterm.lua'
