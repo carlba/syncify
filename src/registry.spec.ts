@@ -32,7 +32,7 @@ describe('registry module', () => {
     const { bootstrapLogger } = await import('./registry.js');
 
     expect(createLoggerMock).toHaveBeenCalledWith(undefined, 'production');
-    expect(childMock).toHaveBeenCalledWith({ name: 'typescript-template' });
+    expect(childMock).toHaveBeenCalledWith({ name: 'syncify' });
     expect(typeof bootstrapLogger.child).toBe('function');
   });
 });
