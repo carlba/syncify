@@ -8,7 +8,7 @@ import {
   resolveApplications,
 } from '../lib/yaml-config.js';
 import { backupApplication } from '../lib/restic.js';
-import { DEFAULT_PASSWORD_FILE, DEFAULT_REPO_PATH } from './defaults.js';
+import { DEFAULT_CONFIG_FILE, DEFAULT_PASSWORD_FILE, DEFAULT_REPO_PATH } from './defaults.js';
 
 interface BackupCommandOptions {
   config: string;
@@ -21,7 +21,7 @@ export function registerBackupCommand(program: Command, logger: Logger): void {
   program
     .command('backup')
     .description('Backup configured applications using restic')
-    .requiredOption('-c, --config <path>', 'Path to syncify YAML config')
+    .requiredOption('-c, --config <path>', 'Path to syncify YAML config', DEFAULT_CONFIG_FILE)
     .option('-r, --repo <path>', 'Path to restic repository', DEFAULT_REPO_PATH)
     .option('-p, --password-file <path>', 'Path to restic password file', DEFAULT_PASSWORD_FILE)
     .option('-a, --app <name>', 'Backup only this application (by name)')

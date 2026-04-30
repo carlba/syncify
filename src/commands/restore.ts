@@ -9,7 +9,12 @@ import {
   resolveApplications,
 } from '../lib/yaml-config.js';
 import { restoreSnapshot, type ResticOptions } from '../lib/restic.js';
-import { DEFAULT_PASSWORD_FILE, DEFAULT_REPO_PATH, DEFAULT_RESTORE_TARGET } from './defaults.js';
+import {
+  DEFAULT_CONFIG_FILE,
+  DEFAULT_PASSWORD_FILE,
+  DEFAULT_REPO_PATH,
+  DEFAULT_RESTORE_TARGET,
+} from './defaults.js';
 import type { ResolvedApplication } from '../lib/yaml-config.js';
 
 interface RestoreCommandOptions {
@@ -59,7 +64,7 @@ export function registerRestoreCommand(program: Command, logger: Logger): void {
     .command('restore')
     .description('Restore a snapshot from the restic repository')
     .option('-s, --snapshot <id>', 'Snapshot ID or "latest" to restore', 'latest')
-    .option('-c, --config <path>', 'Path to syncify YAML config')
+    .option('-c, --config <path>', 'Path to syncify YAML config', DEFAULT_CONFIG_FILE)
     .option('-a, --app <name>', 'Restore a configured application using current platform paths')
     .option('-r, --repo <path>', 'Path to restic repository', DEFAULT_REPO_PATH)
     .option('-p, --password-file <path>', 'Path to restic password file', DEFAULT_PASSWORD_FILE)
