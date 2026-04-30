@@ -70,11 +70,19 @@ syncify restore --config syncify.yml --app calibre --snapshot latest
 When using `--app`, the configured resolved path is restored into the target
 root instead of recreating the original absolute source path under the target.
 
+
 ### List snapshots
 
 ```bash
 syncify snapshots
 ```
+
+### Prune unused data
+
+```bash
+syncify prune --config syncify.yml
+```
+Removes unused data from the repository (global, not per app).
 
 ## Config format
 

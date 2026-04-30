@@ -5,6 +5,7 @@ import { registerInitCommand } from './commands/init.js';
 import { registerBackupCommand } from './commands/backup.js';
 import { registerRestoreCommand } from './commands/restore.js';
 import { registerSnapshotsCommand } from './commands/snapshots.js';
+import { registerPruneCommand } from './commands/prune.js';
 
 const logger = LOGGER.child({ module: 'cli' });
 
@@ -20,6 +21,7 @@ export function buildCli(): Command {
   registerBackupCommand(program, logger);
   registerRestoreCommand(program, logger);
   registerSnapshotsCommand(program, logger);
+  registerPruneCommand(program, logger);
 
   return program;
 }
