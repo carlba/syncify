@@ -1,12 +1,13 @@
 import type { Command } from 'commander';
 import type { Logger } from 'pino';
-import { expandHomeDirectory } from '../lib/yaml-config.js';
+import { expandHomeDirectory, readYamlConfig, resolveApplications } from '../lib/yaml-config.js';
 import { listSnapshots } from '../lib/restic.js';
-import { DEFAULT_PASSWORD_FILE, DEFAULT_REPO_PATH } from './defaults.js';
+import { DEFAULT_CONFIG_FILE, DEFAULT_PASSWORD_FILE, DEFAULT_REPO_PATH } from './defaults.js';
 
 interface SnapshotsCommandOptions {
   repo: string;
   passwordFile: string;
+  config: string;
 }
 
 export function registerSnapshotsCommand(program: Command, logger: Logger): void {
@@ -15,14 +16,17 @@ export function registerSnapshotsCommand(program: Command, logger: Logger): void
     .description('List all snapshots in the restic repository')
     .option('-r, --repo <path>', 'Path to restic repository', DEFAULT_REPO_PATH)
     .option('-p, --password-file <path>', 'Path to restic password file', DEFAULT_PASSWORD_FILE)
+    .option('-c, --config <path>', 'Path to syncify YAML config', DEFAULT_CONFIG_FILE)
     .action(async (options: SnapshotsCommandOptions) => {
-      const log = logger.child({ command: 'snapshots' });
-
-      log.info({ repo: options.repo }, 'Listing snapshots');
+      const localLogger = logger.child({ command: 'snapshots' });
+      localLogger.debug({ repo: options.repo }, 'Listing snapshots');
+      const syncifyConfig = readYamlConfig(options.config);
+      const applications = resolveApplications(syncifyConfig);
 
       await listSnapshots({
         repositoryPath: expandHomeDirectory(options.repo),
         passwordFile: expandHomeDirectory(options.passwordFile),
+        applications,
       });
     });
 }
