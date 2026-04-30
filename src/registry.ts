@@ -9,4 +9,6 @@ export const bootstrapLogger = createLogger(undefined, 'production').child({
   name: PACKAGE_NAME,
 });
 export const config = initConfig(envSchema, bootstrapLogger);
-export const LOGGER = createLogger(undefined, config.NODE_ENV).child({ name: PACKAGE_NAME });
+export const LOGGER = createLogger(undefined, config.NODE_ENV, { level: 'info' }).child({
+  name: PACKAGE_NAME,
+});

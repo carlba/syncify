@@ -1,10 +1,15 @@
 import { execa } from 'execa';
-import type { ResolvedApplication } from './yaml-config.js';
+import { type ResolvedApplication } from './yaml-config.js';
+import type { ResticSnapshot } from './restic.types.js';
+
+import { AsciiTable3 } from 'ascii-table3';
+import { formatBytes } from './utils.js';
 
 export interface ResticOptions {
   repositoryPath: string;
   passwordFile: string;
   extraArgs?: string[];
+  applications?: ResolvedApplication[];
 }
 
 export interface BackupTarget {
@@ -105,16 +110,69 @@ export async function restoreSnapshot(
   }
 }
 
+function formatShortDateTime(value: string): string {
+  return new Date(value).toLocaleString('sv-SE', {
+    dateStyle: 'short',
+    timeStyle: 'short',
+  });
+}
+
+function formatRestoreSnapshotData(snap: ResticSnapshot, applications: ResolvedApplication[]) {
+  return {
+    ID: snap.short_id,
+    'Backup start': formatShortDateTime(snap.summary.backup_start),
+    // Host: snap.hostname,
+    // User: `${snap.username}(uid:${snap.uid}, gid:${snap.gid})`,
+    application: applications.find(application =>
+      snap.tags.every(tag => application.resticTags.includes(tag))
+    )?.name,
+    Paths: snap.paths.length,
+    Tags: snap.tags.join(' '),
+    // 'Backup end': formatShortDateTime(snap.summary.backup_end),
+    Files: `${snap.summary.files_new}/${snap.summary.files_changed}/${snap.summary.files_unmodified}`,
+    Total: `${snap.summary.total_files_processed}`,
+    'Dir (n/c/uc)': `${snap.summary.dirs_new}/${snap.summary.dirs_changed}/${snap.summary.dirs_unmodified}`,
+    Added: `${formatBytes(snap.summary.data_added)}`,
+    Processed: `${formatBytes(snap.summary.total_bytes_processed)}`,
+  };
+}
+
 /**
  * List snapshots in the repository.
  */
 export async function listSnapshots(options: ResticOptions): Promise<void> {
   const baseArgs = buildBaseArgs(options);
+  const applications = options.applications;
 
-  try {
-    await execa('restic', ['snapshots', ...baseArgs], { stdio: 'inherit' });
-  } catch (error: unknown) {
-    throw wrapResticError('snapshots', error);
+  options.extraArgs = [...(options.extraArgs ?? ['--json'])];
+
+  if (options.extraArgs?.includes('--json')) {
+    try {
+      const { stdout } = await execa('restic', ['snapshots', ...baseArgs, ...options.extraArgs], {
+        stdio: 'pipe',
+      });
+      const data = stdout
+        .split('\n')
+        .map(line => JSON.parse(line) as [])
+        .flat()
+        .map(line =>
+          formatRestoreSnapshotData(line as unknown as ResticSnapshot, applications ?? [])
+        );
+
+      const table = new AsciiTable3()
+        .setHeading(...Object.keys(data[0]))
+        .addRowMatrix(data.map(dat => Object.values(dat)));
+
+      console.log(table.toString());
+    } catch (error: unknown) {
+      throw wrapResticError('snapshots', error);
+    }
+  } else {
+    try {
+      await execa('restic', ['snapshots', ...baseArgs], { stdio: 'inherit' });
+    } catch (error: unknown) {
+      throw wrapResticError('snapshots', error);
+    }
   }
 }
 
