@@ -13,6 +13,7 @@ import {
 import type { SyncifyConfig } from '../syncify-schema.js';
 
 const EXAMPLE_CONFIG: SyncifyConfig = {
+  exclude_patterns: [],
   syncify_applications: {
     calibre: {
       description: 'Calibre settings',
@@ -87,6 +88,29 @@ describe('SyncifyConfigSchema', () => {
     if (result.success) {
       expect(result.data.syncify_applications.myapp.enabled).toBe(true);
       expect(result.data.syncify_applications.myapp.restic_tags).toEqual([]);
+      expect(result.data.exclude_patterns).toEqual([]);
+    }
+  });
+
+  it('parses top-level exclude patterns', () => {
+    const result = SyncifyConfigSchema.safeParse({
+      exclude_patterns: ['.cache', 'node_modules'],
+      syncify_applications: {
+        myapp: {
+          paths: [
+            {
+              name: 'data',
+              type: 'file',
+              platforms: { all: '/some/path' },
+            },
+          ],
+        },
+      },
+    });
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.exclude_patterns).toEqual(['.cache', 'node_modules']);
     }
   });
 

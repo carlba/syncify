@@ -4,6 +4,7 @@ import type { ResticSnapshot } from './restic.types.js';
 
 import { AsciiTable3 } from 'ascii-table3';
 import { formatBytes } from './utils.js';
+import { LOGGER } from '../registry.js';
 
 export interface ResticOptions {
   repositoryPath: string;
@@ -68,6 +69,7 @@ export async function backupApplication(
   options: ResticOptions,
   cwd?: string
 ): Promise<void> {
+  const localLogger = LOGGER.child({ module: 'restic', context: backupApplication.name });
   const { app, relativePaths, extraArgs = [] } = target;
   const baseArgs = buildBaseArgs(options);
 
@@ -76,6 +78,8 @@ export async function backupApplication(
   }
 
   const tagArgs = app.resticTags.flatMap(tag => ['--tag', tag]);
+
+  localLogger.debug({ baseArgs, tagArgs, extraArgs }, 'backup upp application');
 
   try {
     await execa('restic', ['backup', ...baseArgs, ...tagArgs, ...extraArgs, ...relativePaths], {
