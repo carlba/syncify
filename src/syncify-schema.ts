@@ -24,6 +24,7 @@ export const ApplicationSchema = z.object({
 });
 
 export const SyncifyConfigSchema = z.object({
+  exclude_patterns: z.array(z.string()).default([]),
   syncify_applications: z.record(z.string(), ApplicationSchema),
 });
 

@@ -7,3 +7,12 @@ export const DEFAULT_REPO_PATH = join(SYNCIFY_BASE_DIR, 'repo');
 export const DEFAULT_CONFIG_FILE = join(SYNCIFY_BASE_DIR, 'config.yml');
 export const DEFAULT_PASSWORD_FILE = join(SYNCIFY_BASE_DIR, 'password');
 export const DEFAULT_RESTORE_TARGET = join(SYNCIFY_BASE_DIR, 'restore');
+export const DEFAULT_EXCLUDE_PATTERNS: string[] = [
+  '**/node_modules',
+  '~/development/media-pulse',
+  '~/development/tidalfy',
+  '~/development/image-dater',
+  '**/venv',
+  '**/.venv',
+  '**/downloads',
+];

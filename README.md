@@ -79,6 +79,9 @@ syncify snapshots
 ## Config format
 
 ```yaml
+exclude_patterns:
+  - .cache
+  - node_modules
 syncify_applications:
   calibre:
     description: "Calibre settings"
