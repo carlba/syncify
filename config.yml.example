@@ -34,9 +34,7 @@ syncify_applications:
       - name: main_db
         type: folder
         platforms:
-          darwin:
-            '~/Library/Containers/com.mac.utility.media.hub/Data/Library/Application
-            Support/MediaCenter'
+          darwin: '~/Library/Containers/com.mac.utility.media.hub/Data/Library/Application Support/MediaCenter'
   notion:
     description: 'Notion desktop app settings, cache, and local data'
     enabled: true
@@ -86,6 +84,17 @@ syncify_applications:
         type: folder
         platforms:
           darwin: '~/Library/Application Support/net.limechat.LimeChat-AppStore'
+  vscode:
+    description: 'Visual Studio Code workspace chat sessions'
+    enabled: true
+    restic_tags:
+      - app:vscode
+      - source:desktop
+    paths:
+      - name: chat_sessions
+        type: folder
+        platforms:
+          darwin: '~/Library/Application Support/Code/User/workspaceStorage'
   old-skies:
     description: 'Old Skies application data'
     enabled: true
