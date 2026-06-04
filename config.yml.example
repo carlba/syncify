@@ -1,0 +1,121 @@
+syncify_applications:
+  calibre:
+    description: 'Calibre settings'
+    enabled: true
+    restic_tags:
+      - app:calibre
+      - source:desktop
+    paths:
+      - name: config
+        type: folder
+        platforms:
+          darwin: '/Users/cbackstrom/Library/Preferences/calibre'
+          linux: '/home/cbackstrom/.config/calibre'
+      - name: library
+        type: folder
+        platforms:
+          darwin: '/Users/cbackstrom/Calibre Library'
+          linux: '/home/cbackstrom/Calibre Library'
+  vidhub:
+    description: 'VidHub video player settings and library data'
+    enabled: true
+    restic_tags:
+      - app:vidhub
+      - source:desktop
+    paths:
+      - name: preferences
+        type: file
+        platforms:
+          darwin: '~/Library/Containers/com.mac.utility.media.hub/Data/Library/Preferences/com.mac.utility.media.hub.plist'
+      - name: cloud_db
+        type: folder
+        platforms:
+          darwin: '~/Library/Containers/com.mac.utility.media.hub/Data/CloudKit'
+      - name: main_db
+        type: folder
+        platforms:
+          darwin:
+            '~/Library/Containers/com.mac.utility.media.hub/Data/Library/Application
+            Support/MediaCenter'
+  notion:
+    description: 'Notion desktop app settings, cache, and local data'
+    enabled: true
+    restic_tags:
+      - app:notion
+      - source:desktop
+    paths:
+      - name: app_support
+        type: folder
+        platforms:
+          darwin: '~/Library/Application Support/Notion'
+      - name: preferences
+        type: file
+        platforms:
+          darwin: '~/Library/Preferences/com.notion.Notion.plist'
+      - name: saved_application_state
+        type: folder
+        platforms:
+          darwin: '~/Library/Saved Application State/com.notion.Notion.savedState'
+  beeper:
+    description: 'Beeper IM desktop app settings and local data'
+    enabled: true
+    restic_tags:
+      - app:beeper
+      - source:desktop
+    paths:
+      - name: app_support
+        type: folder
+        platforms:
+          darwin: '~/Library/Application Support/BeeperTexts'
+      - name: preferences
+        type: file
+        platforms:
+          darwin: '~/Library/Preferences/com.automattic.beeper.desktop.plist'
+  limechat:
+    description: 'LimeChat IRC client preferences and chat logs'
+    enabled: true
+    restic_tags:
+      - app:limechat
+      - source:desktop
+    paths:
+      - name: preferences
+        type: file
+        platforms:
+          darwin: '~/Library/Preferences/net.limechat.LimeChat-AppStore.plist'
+      - name: application_support
+        type: folder
+        platforms:
+          darwin: '~/Library/Application Support/net.limechat.LimeChat-AppStore'
+  old-skies:
+    description: 'Old Skies application data'
+    enabled: true
+    restic_tags:
+      - app:old-skies
+      - source:desktop
+    paths:
+      - name: app-support
+        type: folder
+        platforms:
+          darwin: '~/Library/Application Support/Old Skies'
+  development:
+    description: 'My source repositories'
+    enabled: true
+    restic_tags:
+      - app:development
+      - source:desktop
+    paths:
+      - name: development
+        type: folder
+        platforms:
+          darwin: '~/development'
+  macos-backup:
+    description: ''
+    enabled: true
+    restic_tags:
+      - app:development
+      - source:desktop
+    paths:
+      - name: macos-backup
+        type: folder
+        platforms:
+          darwin: '~/.config/backup'
