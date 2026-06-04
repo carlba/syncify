@@ -2,6 +2,7 @@ import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { homedir } from 'node:os';
 import { buildCli } from '../cli.js';
 import { restoreSnapshot } from '../lib/restic.js';
+import { readYamlConfig, resolveApplication } from '../lib/yaml-config.js';
 import { DEFAULT_RESTORE_TARGET } from './defaults.js';
 
 vi.mock('../lib/restic.js', async () => {
@@ -12,11 +13,46 @@ vi.mock('../lib/restic.js', async () => {
   };
 });
 
+vi.mock('../lib/yaml-config.js', async () => {
+  const original =
+    await vi.importActual<typeof import('../lib/yaml-config.js')>('../lib/yaml-config.js');
+  return {
+    ...original,
+    readYamlConfig: vi.fn(),
+    resolveApplication: vi.fn(),
+  };
+});
+
 const mockedRestoreSnapshot = vi.mocked(restoreSnapshot);
+const mockedReadYamlConfig = vi.mocked(readYamlConfig);
+const mockedResolveApplication = vi.mocked(resolveApplication);
 
 describe('restore command', () => {
   beforeEach(() => {
     mockedRestoreSnapshot.mockReset();
+    mockedReadYamlConfig.mockReset().mockReturnValue({
+      syncify_applications: {
+        wezterm: {
+          enabled: true,
+          description: 'WezTerm',
+          restic_tags: ['app:wezterm,source:desktop'],
+          paths: [
+            {
+              name: 'config',
+              type: 'file',
+              platforms: { darwin: '~/.wezterm.lua', all: '~/.wezterm.lua' },
+            },
+          ],
+        },
+      },
+    } as any);
+    mockedResolveApplication.mockReset().mockReturnValue({
+      name: 'wezterm',
+      description: 'WezTerm',
+      enabled: true,
+      resticTags: ['app:wezterm,source:desktop'],
+      paths: [{ name: 'config', type: 'file', resolvedPath: `${homedir()}/.wezterm.lua` }],
+    } as any);
   });
 
   it('defaults to latest when snapshot is omitted for an app restore', async () => {
