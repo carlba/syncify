@@ -9,12 +9,7 @@ import {
   resolveApplications,
 } from '../lib/yaml-config.js';
 import { restoreSnapshot, type ResticOptions } from '../lib/restic.js';
-import {
-  DEFAULT_CONFIG_FILE,
-  DEFAULT_PASSWORD_FILE,
-  DEFAULT_REPO_PATH,
-  DEFAULT_RESTORE_TARGET,
-} from './defaults.js';
+import { DEFAULT_PASSWORD_FILE, DEFAULT_REPO_PATH, DEFAULT_RESTORE_TARGET } from './defaults.js';
 import type { ResolvedApplication } from '../lib/yaml-config.js';
 
 interface RestoreCommandOptions {

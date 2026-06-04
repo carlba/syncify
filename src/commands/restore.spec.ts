@@ -2,7 +2,12 @@ import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { homedir } from 'node:os';
 import { buildCli } from '../cli.js';
 import { restoreSnapshot } from '../lib/restic.js';
-import { readYamlConfig, resolveApplication } from '../lib/yaml-config.js';
+import {
+  readYamlConfig,
+  resolveApplication,
+  type ResolvedApplication,
+} from '../lib/yaml-config.js';
+import type { SyncifyConfig } from '../syncify-schema.js';
 import { DEFAULT_RESTORE_TARGET } from './defaults.js';
 
 vi.mock('../lib/restic.js', async () => {
@@ -23,14 +28,18 @@ vi.mock('../lib/yaml-config.js', async () => {
   };
 });
 
-const mockedRestoreSnapshot = vi.mocked(restoreSnapshot);
-const mockedReadYamlConfig = vi.mocked(readYamlConfig);
-const mockedResolveApplication = vi.mocked(resolveApplication);
+const mockedRestoreSnapshot = vi.mocked(restoreSnapshot, true);
+const mockedReadYamlConfig = vi.mocked(readYamlConfig, true);
+const mockedResolveApplication = vi.mocked(resolveApplication, true);
 
 describe('restore command', () => {
   beforeEach(() => {
     mockedRestoreSnapshot.mockReset();
-    mockedReadYamlConfig.mockReset().mockReturnValue({
+    mockedReadYamlConfig.mockReset();
+    mockedResolveApplication.mockReset();
+
+    const exampleConfig: SyncifyConfig = {
+      exclude_patterns: [],
       syncify_applications: {
         wezterm: {
           enabled: true,
@@ -45,14 +54,18 @@ describe('restore command', () => {
           ],
         },
       },
-    } as any);
-    mockedResolveApplication.mockReset().mockReturnValue({
+    };
+
+    const exampleApplication: ResolvedApplication = {
       name: 'wezterm',
       description: 'WezTerm',
       enabled: true,
       resticTags: ['app:wezterm,source:desktop'],
       paths: [{ name: 'config', type: 'file', resolvedPath: `${homedir()}/.wezterm.lua` }],
-    } as any);
+    };
+
+    mockedReadYamlConfig.mockReturnValue(exampleConfig);
+    mockedResolveApplication.mockReturnValue(exampleApplication);
   });
 
   it('defaults to latest when snapshot is omitted for an app restore', async () => {
