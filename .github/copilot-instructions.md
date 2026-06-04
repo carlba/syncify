@@ -5,6 +5,12 @@
 This is a TypeScript project using ESM modules, Vitest for testing, ESLint + Prettier for code
 quality, and nodemon/tsx for development.
 
+## Shell environment
+
+> Note: Always run `cat` using a fixed local path such as `/usr/bin/cat` in the shell used by
+> tooling or Copilot. This avoids shell aliases like `cat` → `gcat` and keeps tool output plain text
+> without ANSI color escapes.
+
 ## Commands
 
 - `npm run build` — compile TypeScript
@@ -62,6 +68,8 @@ Fix any failures and rerun both commands before completing the task.
 
 - Keep all source code in `src/`.
 - Prefer early returns to reduce nesting.
+- When adding a package, choose the latest compatible major, unless there is a specific
+  compatibility reason not to.
 
 ## HTTP requests
 
@@ -117,6 +125,8 @@ async function fetchUser(userId: string): Promise<User> {
 - Write behavior-focused tests, not implementation tests.
 - Prefer `vi.mock` for external dependencies and avoid mocking internals.
 - Cover edge cases and error paths, not just the happy path.
+- If got requests needs to be tested prefer using [nock](https://github.com/nock/nock) to mock
+  actual http requests then mocking got.
 
 ## Backend
 
@@ -185,12 +195,9 @@ async function fetchUser(userId: string): Promise<User> {
 - Keep components small and focused on a single responsibility; move business logic into custom
   hooks or service modules.
 - Use React Router for client-side routing when navigation is required.
+- Use [React Hook Form](https://react-hook-form.com/) for all form needs in an idiomatic way.
 - Prefer functional components and React hooks; do not use class components.
 - Lift state only as far as needed; prefer local component state or context over global state
   libraries unless the app clearly requires it.
 - Follow accessible HTML patterns; shadcn/ui is built on Radix UI primitives which provide ARIA
   support — supplement with explicit labels where needed.
-
-```
-
-```
