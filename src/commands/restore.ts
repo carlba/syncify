@@ -67,11 +67,6 @@ export function registerRestoreCommand(program: Command, logger: Logger): void {
     .option('-i, --include <path...>', 'Limit restore to these paths (can be repeated)')
     .action(async (options: RestoreCommandOptions) => {
       const log = logger.child({ command: 'restore' });
-
-      if (options.app !== undefined && options.config === undefined) {
-        throw new Error('The --app option requires --config <path>');
-      }
-
       const extraIncludePaths = options.include?.length ? [...options.include] : undefined;
       const resticOptions: ResticOptions = {
         repositoryPath: expandHomeDirectory(options.repo),
