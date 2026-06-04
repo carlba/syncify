@@ -22,7 +22,7 @@ describe('registry module', () => {
 
     expect(config.NODE_ENV).toBe('test');
     expect(createLoggerMock).toHaveBeenNthCalledWith(1, undefined, 'production');
-    expect(createLoggerMock).toHaveBeenNthCalledWith(2, undefined, 'test');
+    expect(createLoggerMock).toHaveBeenNthCalledWith(2, undefined, 'test', { level: 'info' });
     expect(childMock).toHaveBeenCalledTimes(2);
     expect(typeof LOGGER.child).toBe('function');
   });
