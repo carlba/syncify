@@ -109,10 +109,10 @@ syncify_applications:
         platforms:
           darwin: '~/development'
   macos-backup:
-    description: ''
+    description: 'General macOS backup files'
     enabled: true
     restic_tags:
-      - app:development
+      - app:macos-backup
       - source:desktop
     paths:
       - name: macos-backup
