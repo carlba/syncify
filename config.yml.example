@@ -95,6 +95,25 @@ syncify_applications:
         type: folder
         platforms:
           darwin: '~/Library/Application Support/Code/User/workspaceStorage'
+  cyberduck:
+    description: 'Cyberduck bookmarks, preferences, and local app data'
+    enabled: true
+    restic_tags:
+      - app:cyberduck
+      - source:desktop
+    paths:
+      - name: preferences
+        type: file
+        platforms:
+          darwin: '~/Library/Preferences/ch.sudo.cyberduck.plist'
+      - name: application_support
+        type: folder
+        platforms:
+          darwin: '~/Library/Application Support/Cyberduck'
+      - name: saved_state
+        type: folder
+        platforms:
+          darwin: '~/Library/Saved Application State/ch.sudo.cyberduck.savedState'
   old-skies:
     description: 'Old Skies application data'
     enabled: true
