@@ -34,8 +34,8 @@ chmod 600 ~/.config/syncify/password
 All commands accept `-r / --repo` and `-p / --password-file` to override
 the default paths (`~/.config/syncify/repo` and
 `~/.config/syncify/password`). The restic repository path can also be set with
-`SYNCIFY_REPO_PATH`. Path arguments expand `~` to the current user home
-directory.
+`SYNCIFY_REPO_PATH` and the password-file path with `SYNCIFY_PASSWORD_FILE`.
+Path arguments expand `~` to the current user home directory.
 
 ### Initialize a repository
 

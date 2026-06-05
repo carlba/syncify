@@ -52,7 +52,7 @@ export function createLogger(
           targets: [
             {
               target: 'pino-pretty',
-              options: { colorize: true, ignore: 'pid,hostname,context,module' },
+              options: { colorize: true, ignore: 'pid,hostname,context,module', singleLine: true },
               level: 'debug',
             },
           ],

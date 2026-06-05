@@ -1,4 +1,4 @@
-import { Option, type Command } from 'commander';
+import type { Command } from 'commander';
 import type { Logger } from 'pino';
 import {
   expandHomeDirectory,
@@ -9,12 +9,8 @@ import {
   resolveApplications,
 } from '../lib/yaml-config.js';
 import { restoreSnapshot, type ResticOptions } from '../lib/restic.js';
-import {
-  DEFAULT_CONFIG_FILE,
-  DEFAULT_PASSWORD_FILE,
-  DEFAULT_RESTORE_TARGET,
-  DEFAULT_REPO_PATH,
-} from './defaults.js';
+import { DEFAULT_RESTORE_TARGET } from './defaults.js';
+import { addSharedOptions } from './shared-options.js';
 import type { ResolvedApplication } from '../lib/yaml-config.js';
 
 interface RestoreCommandOptions {
@@ -60,18 +56,13 @@ async function restoreApplication(
 }
 
 export function registerRestoreCommand(program: Command, logger: Logger): void {
-  program
+  const command = program
     .command('restore')
-    .description('Restore a snapshot from the restic repository')
-    .option('-s, --snapshot <id>', 'Snapshot ID or "latest" to restore', 'latest')
-    .requiredOption('-c, --config <path>', 'Path to syncify YAML config', DEFAULT_CONFIG_FILE)
+    .description('Restore a snapshot from the restic repository');
+  command.option('-s, --snapshot <id>', 'Snapshot ID or "latest" to restore', 'latest');
+  addSharedOptions(command);
+  command
     .option('-a, --app <name>', 'Restore a configured application using current platform paths')
-    .addOption(
-      new Option('-r, --repo <path>', 'Path to restic repository')
-        .default(DEFAULT_REPO_PATH)
-        .env('SYNCIFY_REPO_PATH')
-    )
-    .option('-p, --password-file <path>', 'Path to restic password file', DEFAULT_PASSWORD_FILE)
     .option('-t, --target <path>', 'Directory to restore into')
     .option('-i, --include <path...>', 'Limit restore to these paths (can be repeated)')
     .action(async (options: RestoreCommandOptions) => {

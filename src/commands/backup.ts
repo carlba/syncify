@@ -1,4 +1,4 @@
-import { Option, type Command } from 'commander';
+import type { Command } from 'commander';
 import type { Logger } from 'pino';
 import {
   expandHomeDirectory,
@@ -8,12 +8,8 @@ import {
   resolveApplications,
 } from '../lib/yaml-config.js';
 import { backupApplication } from '../lib/restic.js';
-import {
-  DEFAULT_CONFIG_FILE,
-  DEFAULT_EXCLUDE_PATTERNS,
-  DEFAULT_PASSWORD_FILE,
-  DEFAULT_REPO_PATH,
-} from './defaults.js';
+import { DEFAULT_EXCLUDE_PATTERNS } from './defaults.js';
+import { addSharedOptions } from './shared-options.js';
 
 interface BackupCommandOptions {
   config: string;
@@ -29,16 +25,12 @@ function collectExclude(value: string, previous: string[]): string[] {
 }
 
 export function registerBackupCommand(program: Command, logger: Logger): void {
-  program
+  const command = program
     .command('backup')
-    .description('Backup configured applications using restic')
-    .requiredOption('-c, --config <path>', 'Path to syncify YAML config', DEFAULT_CONFIG_FILE)
-    .addOption(
-      new Option('-r, --repo <path>', 'Path to restic repository')
-        .default(DEFAULT_REPO_PATH)
-        .env('SYNCIFY_REPO_PATH')
-    )
-    .option('-p, --password-file <path>', 'Path to restic password file', DEFAULT_PASSWORD_FILE)
+    .description('Backup configured applications using restic');
+  addSharedOptions(command);
+
+  command
     .option('-a, --app <name>', 'Backup only this application (by name)')
     .option(
       '-e, --exclude <pattern>',
