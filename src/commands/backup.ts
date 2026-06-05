@@ -15,6 +15,8 @@ interface BackupCommandOptions {
   config: string;
   repo: string;
   passwordFile: string;
+  restUsername?: string;
+  restPassword?: string;
   app?: string;
   exclude?: string[];
 }
@@ -72,6 +74,8 @@ export function registerBackupCommand(program: Command, logger: Logger): void {
       const resticOptions = {
         repositoryPath: expandHomeDirectory(options.repo),
         passwordFile: expandHomeDirectory(options.passwordFile),
+        restUsername: options.restUsername,
+        restPassword: options.restPassword,
         extraArgs,
       };
 

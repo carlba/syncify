@@ -17,6 +17,8 @@ interface RestoreCommandOptions {
   config?: string;
   repo: string;
   passwordFile: string;
+  restUsername?: string;
+  restPassword?: string;
   snapshot: string;
   target?: string;
   include?: string[];
@@ -71,6 +73,8 @@ export function registerRestoreCommand(program: Command, logger: Logger): void {
       const resticOptions: ResticOptions = {
         repositoryPath: expandHomeDirectory(options.repo),
         passwordFile: expandHomeDirectory(options.passwordFile),
+        restUsername: options.restUsername,
+        restPassword: options.restPassword,
       };
       const targetOverride = options.target ? expandHomeDirectory(options.target) : undefined;
 

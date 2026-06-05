@@ -16,5 +16,13 @@ export function addSharedOptions<T extends Command>(command: T): T {
       .env('SYNCIFY_PASSWORD_FILE')
   );
 
+  command.addOption(
+    new Option('--rest-username <username>', 'REST backend username').env('SYNCIFY_REST_USERNAME')
+  );
+
+  command.addOption(
+    new Option('--rest-password <password>', 'REST backend password').env('SYNCIFY_REST_PASSWORD')
+  );
+
   return command;
 }

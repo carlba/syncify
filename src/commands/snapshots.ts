@@ -7,6 +7,8 @@ import { addSharedOptions } from './shared-options.js';
 interface SnapshotsCommandOptions {
   repo: string;
   passwordFile: string;
+  restUsername?: string;
+  restPassword?: string;
   config: string;
 }
 
@@ -25,6 +27,8 @@ export function registerSnapshotsCommand(program: Command, logger: Logger): void
     await listSnapshots({
       repositoryPath: expandHomeDirectory(options.repo),
       passwordFile: expandHomeDirectory(options.passwordFile),
+      restUsername: options.restUsername,
+      restPassword: options.restPassword,
       applications,
     });
   });

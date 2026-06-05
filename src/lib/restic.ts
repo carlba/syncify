@@ -9,6 +9,8 @@ import { LOGGER } from '../registry.js';
 export interface ResticOptions {
   repositoryPath: string;
   passwordFile: string;
+  restUsername?: string;
+  restPassword?: string;
   extraArgs?: string[];
   applications?: ResolvedApplication[];
 }
@@ -39,6 +41,15 @@ function buildBaseArgs(options: ResticOptions): string[] {
   ];
 }
 
+export function buildResticEnv(options: ResticOptions): NodeJS.ProcessEnv {
+  return {
+    // eslint-disable-next-line no-restricted-syntax
+    ...process.env,
+    ...(options.restUsername ? { RESTIC_REST_USERNAME: options.restUsername } : {}),
+    ...(options.restPassword ? { RESTIC_REST_PASSWORD: options.restPassword } : {}),
+  };
+}
+
 /**
  * Initialize a new restic repository.
  *
@@ -48,7 +59,10 @@ export async function initRepository(options: ResticOptions): Promise<void> {
   const baseArgs = buildBaseArgs(options);
 
   try {
-    await execa('restic', ['init', ...baseArgs], { stdio: 'inherit' });
+    await execa('restic', ['init', ...baseArgs], {
+      stdio: 'inherit',
+      env: buildResticEnv(options),
+    });
   } catch (error: unknown) {
     const exitCode = getExecaExitCode(error);
 
@@ -85,6 +99,7 @@ export async function backupApplication(
     await execa('restic', ['backup', ...baseArgs, ...tagArgs, ...extraArgs, ...relativePaths], {
       stdio: 'inherit',
       cwd,
+      env: buildResticEnv(options),
     });
   } catch (error: unknown) {
     throw wrapResticError(`backup:${app.name}`, error);
@@ -107,7 +122,10 @@ export async function restoreSnapshot(
     await execa(
       'restic',
       ['restore', snapshot, '--target', target, ...baseArgs, ...includeArgs, ...extraArgs],
-      { stdio: 'inherit' }
+      {
+        stdio: 'inherit',
+        env: buildResticEnv(options),
+      }
     );
   } catch (error: unknown) {
     throw wrapResticError('restore', error);
@@ -154,6 +172,7 @@ export async function listSnapshots(options: ResticOptions): Promise<void> {
     try {
       const { stdout } = await execa('restic', ['snapshots', ...baseArgs, ...options.extraArgs], {
         stdio: 'pipe',
+        env: buildResticEnv(options),
       });
       const data = stdout
         .split('\n')
@@ -173,7 +192,10 @@ export async function listSnapshots(options: ResticOptions): Promise<void> {
     }
   } else {
     try {
-      await execa('restic', ['snapshots', ...baseArgs], { stdio: 'inherit' });
+      await execa('restic', ['snapshots', ...baseArgs], {
+        stdio: 'inherit',
+        env: buildResticEnv(options),
+      });
     } catch (error: unknown) {
       throw wrapResticError('snapshots', error);
     }

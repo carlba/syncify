@@ -3,12 +3,15 @@ import type { Logger } from 'pino';
 
 import { expandHomeDirectory, readYamlConfig } from '../lib/yaml-config.js';
 import { execa } from 'execa';
+import { buildResticEnv } from '../lib/restic.js';
 import { addSharedOptions } from './shared-options.js';
 
 interface PruneCommandOptions {
   config: string;
   repo: string;
   passwordFile: string;
+  restUsername?: string;
+  restPassword?: string;
 }
 
 export function registerPruneCommand(program: Command, logger: Logger): void {
@@ -32,7 +35,15 @@ export function registerPruneCommand(program: Command, logger: Logger): void {
           '--password-file',
           expandHomeDirectory(options.passwordFile),
         ],
-        { stdio: 'inherit' }
+        {
+          stdio: 'inherit',
+          env: buildResticEnv({
+            repositoryPath: expandHomeDirectory(options.repo),
+            passwordFile: expandHomeDirectory(options.passwordFile),
+            restUsername: options.restUsername,
+            restPassword: options.restPassword,
+          }),
+        }
       );
       log.info('Repository pruned successfully');
     } catch (error) {

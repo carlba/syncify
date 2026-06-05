@@ -8,6 +8,8 @@ interface InitCommandOptions {
   config: string;
   repo: string;
   passwordFile: string;
+  restUsername?: string;
+  restPassword?: string;
 }
 
 export function registerInitCommand(program: Command, logger: Logger): void {
@@ -23,6 +25,8 @@ export function registerInitCommand(program: Command, logger: Logger): void {
     await initRepository({
       repositoryPath: expandHomeDirectory(options.repo),
       passwordFile: expandHomeDirectory(options.passwordFile),
+      restUsername: options.restUsername,
+      restPassword: options.restPassword,
     });
 
     log.info('Repository initialized successfully');
