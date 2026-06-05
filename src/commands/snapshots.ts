@@ -1,4 +1,4 @@
-import type { Command } from 'commander';
+import { Option, type Command } from 'commander';
 import type { Logger } from 'pino';
 import { expandHomeDirectory, readYamlConfig, resolveApplications } from '../lib/yaml-config.js';
 import { listSnapshots } from '../lib/restic.js';
@@ -14,7 +14,11 @@ export function registerSnapshotsCommand(program: Command, logger: Logger): void
   program
     .command('snapshots')
     .description('List all snapshots in the restic repository')
-    .option('-r, --repo <path>', 'Path to restic repository', DEFAULT_REPO_PATH)
+    .addOption(
+      new Option('-r, --repo <path>', 'Path to restic repository')
+        .default(DEFAULT_REPO_PATH)
+        .env('SYNCIFY_REPO_PATH')
+    )
     .option('-p, --password-file <path>', 'Path to restic password file', DEFAULT_PASSWORD_FILE)
     .option('-c, --config <path>', 'Path to syncify YAML config', DEFAULT_CONFIG_FILE)
     .action(async (options: SnapshotsCommandOptions) => {

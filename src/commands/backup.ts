@@ -1,4 +1,4 @@
-import type { Command } from 'commander';
+import { Option, type Command } from 'commander';
 import type { Logger } from 'pino';
 import {
   expandHomeDirectory,
@@ -33,7 +33,11 @@ export function registerBackupCommand(program: Command, logger: Logger): void {
     .command('backup')
     .description('Backup configured applications using restic')
     .requiredOption('-c, --config <path>', 'Path to syncify YAML config', DEFAULT_CONFIG_FILE)
-    .option('-r, --repo <path>', 'Path to restic repository', DEFAULT_REPO_PATH)
+    .addOption(
+      new Option('-r, --repo <path>', 'Path to restic repository')
+        .default(DEFAULT_REPO_PATH)
+        .env('SYNCIFY_REPO_PATH')
+    )
     .option('-p, --password-file <path>', 'Path to restic password file', DEFAULT_PASSWORD_FILE)
     .option('-a, --app <name>', 'Backup only this application (by name)')
     .option(

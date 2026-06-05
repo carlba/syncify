@@ -1,4 +1,4 @@
-import type { Command } from 'commander';
+import { Option, type Command } from 'commander';
 import type { Logger } from 'pino';
 import { expandHomeDirectory, readYamlConfig } from '../lib/yaml-config.js';
 import { initRepository } from '../lib/restic.js';
@@ -15,7 +15,11 @@ export function registerInitCommand(program: Command, logger: Logger): void {
     .command('init')
     .description('Initialize the restic repository')
     .requiredOption('-c, --config <path>', 'Path to syncify YAML config', DEFAULT_CONFIG_FILE)
-    .option('-r, --repo <path>', 'Path to restic repository', DEFAULT_REPO_PATH)
+    .addOption(
+      new Option('-r, --repo <path>', 'Path to restic repository')
+        .default(DEFAULT_REPO_PATH)
+        .env('SYNCIFY_REPO_PATH')
+    )
     .option('-p, --password-file <path>', 'Path to restic password file', DEFAULT_PASSWORD_FILE)
     .action(async (options: InitCommandOptions) => {
       const log = logger.child({ command: 'init' });

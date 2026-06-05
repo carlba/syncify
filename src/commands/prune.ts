@@ -1,4 +1,4 @@
-import type { Command } from 'commander';
+import { Option, type Command } from 'commander';
 import type { Logger } from 'pino';
 
 import { expandHomeDirectory, readYamlConfig } from '../lib/yaml-config.js';
@@ -16,7 +16,11 @@ export function registerPruneCommand(program: Command, logger: Logger): void {
     .command('prune')
     .description('Prune unused data from the restic repository (global, not per app)')
     .option('-c, --config <path>', 'Path to syncify YAML config', DEFAULT_CONFIG_FILE)
-    .option('-r, --repo <path>', 'Path to restic repository', DEFAULT_REPO_PATH)
+    .addOption(
+      new Option('-r, --repo <path>', 'Path to restic repository')
+        .default(DEFAULT_REPO_PATH)
+        .env('SYNCIFY_REPO_PATH')
+    )
     .option('-p, --password-file <path>', 'Path to restic password file', DEFAULT_PASSWORD_FILE)
     .action(async (options: PruneCommandOptions) => {
       const log = logger.child({ command: 'prune' });
