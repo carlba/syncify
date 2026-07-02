@@ -143,3 +143,15 @@ syncify_applications:
         type: folder
         platforms:
           darwin: '~/.config/backup'
+
+  copilot:
+    description: 'Github Copilot'
+    enabled: true
+    restic_tags:
+      - app:macos-backup
+      - source:desktop
+    paths:
+      - name: user-copilot-agents
+        type: folder
+        platforms:
+          darwin: '~/.copilot/agents'
