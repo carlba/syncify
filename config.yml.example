@@ -155,3 +155,15 @@ syncify_applications:
         type: folder
         platforms:
           darwin: '~/.copilot/agents'
+
+  icons:
+    description: 'My icon collection'
+    enabled: true
+    restic_tags:
+      - app:icons
+      - source:desktop
+    paths:
+      - name: icons
+        type: folder
+        platforms:
+          darwin: '~/icons'
